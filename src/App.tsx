@@ -5,15 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/Dashboard";
-import RegisterDonor from "./pages/RegisterDonor";
-import RegisterPatient from "./pages/RegisterPatient";
-import DonorStatus from "./pages/DonorStatus";
-import PatientStatus from "./pages/PatientStatus";
-import FAQs from "./pages/FAQs";
-import MatchingDashboard from "./pages/MatchingDashboard";
+import Login from "./pages/Login.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import RegisterDonor from "./pages/RegisterDonor.jsx";
+import RegisterPatient from "./pages/RegisterPatient.jsx";
+import DonorStatus from "./pages/DonorStatus.jsx";
+import PatientStatus from "./pages/PatientStatus.jsx";
+import FAQs from "./pages/FAQs.jsx";
+import MatchingDashboard from "./pages/MatchingDashboard.jsx";
 
 const queryClient = new QueryClient();
 
