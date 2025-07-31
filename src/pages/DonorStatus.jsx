@@ -1,13 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { donorAPI, apiUtils } from '../services/api';
 
 const DonorStatus = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [organFilter, setOrganFilter] = useState('all');
+  const [donors, setDonors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // Sample donor data
-  const donors = [
+  useEffect(() => {
+    // Check authentication
+    if (!apiUtils.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+
+    loadDonors();
+  }, [navigate, currentPage, searchTerm]);
+
+  const loadDonors = async () => {
+    try {
+      setLoading(true);
+      const response = await donorAPI.getDonors(currentPage, 20, searchTerm);
+
+      if (response.success) {
+        setDonors(response.data.content || []);
+        setTotalPages(response.data.totalPages || 0);
+      } else {
+        setError('Failed to load donors');
+      }
+    } catch (error) {
+      console.error('Failed to load donors:', error);
+      setError('Failed to load donors');
+      // Fallback to sample data for demo
+      setSampleDonors();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setSampleDonors = () => {
+    // Sample donor data as fallback
+    setDonors([
     {
       id: 1,
       donorName: 'Priya Sharma (Deceased)',
@@ -73,7 +113,8 @@ const DonorStatus = () => {
       contactPerson: 'Dr. Wilson',
       contactNumber: '+91-98765-22222'
     }
-  ];
+    ]);
+  };
 
   const statusCounts = {
     all: donors.length,

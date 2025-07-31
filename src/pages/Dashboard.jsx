@@ -1,14 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { donorAPI, patientAPI, apiUtils } from '../services/api';
 import hospitalExterior from '../assets/hospital-exterior.jpg';
 import medicalDashboard from '../assets/medical-dashboard.jpg';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [hospitalInfo, setHospitalInfo] = useState(null);
+  const [donorStats, setDonorStats] = useState(null);
+  const [patientStats, setPatientStats] = useState(null);
+  const [criticalPatients, setCriticalPatients] = useState([]);
+
+  useEffect(() => {
+    // Check authentication
+    if (!apiUtils.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+
+    // Load hospital info and statistics
+    loadDashboardData();
+  }, [navigate]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+
+      // Get hospital info from localStorage
+      const hospitalData = apiUtils.getCurrentHospitalInfo();
+      setHospitalInfo(hospitalData);
+
+      // Load statistics in parallel
+      const [donorStatsResponse, patientStatsResponse, criticalPatientsResponse] = await Promise.all([
+        donorAPI.getDonorStats(),
+        patientAPI.getPatientStats(),
+        patientAPI.getCriticalPatients()
+      ]);
+
+      if (donorStatsResponse.success) {
+        setDonorStats(donorStatsResponse.data);
+      }
+
+      if (patientStatsResponse.success) {
+        setPatientStats(patientStatsResponse.data);
+      }
+
+      if (criticalPatientsResponse.success) {
+        setCriticalPatients(criticalPatientsResponse.data || []);
+      }
+
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      setError('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Create stats data from API response
   const statsData = [
     {
       title: 'Total Donors',
-      value: '1,248',
-      change: '+12%',
+      value: donorStats?.total?.toString() || '0',
+      change: '+12%', // This would come from API in real implementation
       changeType: 'increase',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -19,7 +76,7 @@ const Dashboard = () => {
     },
     {
       title: 'Active Patients',
-      value: '892',
+      value: patientStats?.waiting?.toString() || '0',
       change: '+8%',
       changeType: 'increase',
       icon: (
@@ -31,8 +88,8 @@ const Dashboard = () => {
       )
     },
     {
-      title: 'Successful Matches',
-      value: '456',
+      title: 'Available Donors',
+      value: donorStats?.available?.toString() || '0',
       change: '+15%',
       changeType: 'increase',
       icon: (
@@ -43,7 +100,7 @@ const Dashboard = () => {
     },
     {
       title: 'Transplants Complete',
-      value: '378',
+      value: (donorStats?.transplanted || 0).toString(),
       change: '+9%',
       changeType: 'increase',
       icon: (

@@ -1,30 +1,102 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI, locationAPI, hospitalAPI } from '../services/api';
 import loginImage from '../assets/login-split-image.jpg';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     country: '',
     state: '',
     hospital: '',
-    staffId: '',
+    userId: '', // Changed from staffId to match backend
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
 
-  const countries = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia'];
-  const states = {
-    'India': ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Gujarat'],
-    'United States': ['California', 'New York', 'Texas', 'Florida', 'Illinois'],
-    'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
-    'Canada': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
-    'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia']
+  // Load data from backend on component mount
+  React.useEffect(() => {
+    loadCountries();
+  }, []);
+
+  React.useEffect(() => {
+    if (formData.country) {
+      loadStates();
+    }
+  }, [formData.country]);
+
+  React.useEffect(() => {
+    if (formData.state) {
+      loadHospitals();
+    }
+  }, [formData.state]);
+
+  const loadCountries = async () => {
+    try {
+      const response = await locationAPI.getCountries();
+      if (response.success) {
+        setCountries(response.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to load countries:', error);
+      // Fallback to hardcoded data
+      setCountries([
+        { id: 1, name: 'India', code: 'IN' },
+        { id: 2, name: 'United States', code: 'US' }
+      ]);
+    }
   };
-  const hospitals = {
-    'Maharashtra': ['Apollo Hospital Mumbai', 'Lilavati Hospital', 'Fortis Hospital Mumbai'],
-    'Delhi': ['AIIMS Delhi', 'Apollo Hospital Delhi', 'Max Hospital Delhi'],
-    'California': ['UCLA Medical Center', 'Stanford Hospital', 'UCSF Medical Center'],
-    'New York': ['Mount Sinai Hospital', 'NYU Langone', 'NewYork-Presbyterian']
+
+  const loadStates = async () => {
+    try {
+      const selectedCountry = countries.find(c => c.name === formData.country);
+      if (selectedCountry) {
+        const response = await locationAPI.getStates(selectedCountry.id);
+        if (response.success) {
+          setStates(response.data || []);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load states:', error);
+      // Fallback to hardcoded data
+      if (formData.country === 'India') {
+        setStates([
+          { id: 1, name: 'Maharashtra', code: 'MH' },
+          { id: 2, name: 'Tamil Nadu', code: 'TN' }
+        ]);
+      }
+    }
+  };
+
+  const loadHospitals = async () => {
+    try {
+      const response = await hospitalAPI.getHospitals();
+      if (response.success) {
+        // Filter hospitals by selected state
+        const selectedState = states.find(s => s.name === formData.state);
+        const filteredHospitals = response.data.content?.filter(h =>
+          h.stateId === selectedState?.id
+        ) || [];
+        setHospitals(filteredHospitals);
+      }
+    } catch (error) {
+      console.error('Failed to load hospitals:', error);
+      // Fallback to hardcoded data
+      if (formData.state === 'Maharashtra') {
+        setHospitals([
+          { id: 1, name: 'Apollo Hospital Mumbai', tenantId: 'apollo-mumbai' }
+        ]);
+      } else if (formData.state === 'Tamil Nadu') {
+        setHospitals([
+          { id: 2, name: 'Apollo Hospital Chennai', tenantId: 'apollo-chennai' }
+        ]);
+      }
+    }
   };
 
   const handleInputChange = (e) => {
@@ -38,10 +110,43 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', formData);
+    setLoading(true);
+    setError('');
+
+    try {
+      // Validate form data
+      if (!formData.userId || !formData.password) {
+        throw new Error('Please enter both User ID and Password');
+      }
+
+      // Prepare login credentials
+      const credentials = {
+        userId: formData.userId,
+        password: formData.password
+      };
+
+      // Call login API
+      const response = await authAPI.login(credentials);
+
+      if (response.success) {
+        // Store authentication data
+        localStorage.setItem('hospital_token', response.data.token);
+        localStorage.setItem('hospital_tenant_id', response.data.tenantId);
+        localStorage.setItem('hospital_info', JSON.stringify(response.data.hospital));
+
+        // Navigate to dashboard
+        navigate('/dashboard');
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -96,7 +201,9 @@ const Login = () => {
                     >
                       <option value="">Select Country</option>
                       {countries.map(country => (
-                        <option key={country} value={country}>{country}</option>
+                        <option key={country.id || country.name} value={country.name}>
+                          {country.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -113,8 +220,10 @@ const Login = () => {
                       disabled={!formData.country}
                     >
                       <option value="">Select State/Province</option>
-                      {formData.country && states[formData.country]?.map(state => (
-                        <option key={state} value={state}>{state}</option>
+                      {states.map(state => (
+                        <option key={state.id || state.name} value={state.name}>
+                          {state.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -131,24 +240,29 @@ const Login = () => {
                       disabled={!formData.state}
                     >
                       <option value="">Select Hospital</option>
-                      {formData.state && hospitals[formData.state]?.map(hospital => (
-                        <option key={hospital} value={hospital}>{hospital}</option>
+                      {hospitals.map(hospital => (
+                        <option key={hospital.id || hospital.name} value={hospital.name}>
+                          {hospital.name}
+                        </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Staff ID */}
+                  {/* User ID */}
                   <div className="form-group">
-                    <label className="form-label">Staff ID *</label>
+                    <label className="form-label">User ID *</label>
                     <input
                       type="text"
-                      name="staffId"
-                      value={formData.staffId}
+                      name="userId"
+                      value={formData.userId}
                       onChange={handleInputChange}
                       className="form-input"
-                      placeholder="Enter your unique staff ID"
+                      placeholder="Enter your user ID (e.g., ch-001)"
                       required
                     />
+                    <small className="form-help">
+                      Chennai Hospital: ch-001 | Mumbai Hospital: mb-001
+                    </small>
                   </div>
 
                   {/* Password */}
@@ -184,6 +298,21 @@ const Login = () => {
                     </div>
                   </div>
 
+                  {/* Error display */}
+                  {error && (
+                    <div className="error-message" style={{
+                      color: '#dc2626',
+                      backgroundColor: '#fef2f2',
+                      border: '1px solid #fecaca',
+                      borderRadius: '6px',
+                      padding: '12px',
+                      marginBottom: '16px',
+                      fontSize: '14px'
+                    }}>
+                      {error}
+                    </div>
+                  )}
+
                   {/* Forgot password link */}
                   <div className="forgot-password">
                     <Link to="/forgot-password" className="forgot-password-link">
@@ -192,8 +321,12 @@ const Login = () => {
                   </div>
 
                   {/* Submit button */}
-                  <button type="submit" className="btn btn-primary btn-large w-full">
-                    Sign In
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-large w-full"
+                    disabled={loading}
+                  >
+                    {loading ? 'Signing In...' : 'Sign In'}
                   </button>
                 </form>
               </div>

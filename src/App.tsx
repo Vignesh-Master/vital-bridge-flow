@@ -14,6 +14,12 @@ import DonorStatus from "./pages/DonorStatus.jsx";
 import PatientStatus from "./pages/PatientStatus.jsx";
 import FAQs from "./pages/FAQs.jsx";
 import MatchingDashboard from "./pages/MatchingDashboard.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+// Admin Pages
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import HospitalManagement from "./pages/admin/HospitalManagement.jsx";
 
 const queryClient = new QueryClient();
 
@@ -27,13 +33,19 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/register-donor" element={<RegisterDonor />} />
-          <Route path="/register-patient" element={<RegisterPatient />} />
-          <Route path="/donor-status" element={<DonorStatus />} />
-          <Route path="/patient-status" element={<PatientStatus />} />
-          <Route path="/matching-dashboard" element={<MatchingDashboard />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/register-donor" element={<ProtectedRoute><RegisterDonor /></ProtectedRoute>} />
+          <Route path="/register-patient" element={<ProtectedRoute><RegisterPatient /></ProtectedRoute>} />
+          <Route path="/donor-status" element={<ProtectedRoute><DonorStatus /></ProtectedRoute>} />
+          <Route path="/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
+          <Route path="/matching-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
           <Route path="/faqs" element={<FAQs />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/hospitals" element={<HospitalManagement />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
