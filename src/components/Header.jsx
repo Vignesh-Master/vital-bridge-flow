@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { apiUtils } from '../services/api';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path) => location.pathname === path;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear authentication data
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('hospital_data');
+    localStorage.removeItem('user_data');
+
+    // Redirect to login page
+    navigate('/login');
   };
 
   return (
@@ -93,7 +105,7 @@ const Header = () => {
             </button>
 
             {/* Logout */}
-            <button className="logout-btn">
+            <button className="logout-btn" onClick={handleLogout}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <polyline points="16,17 21,12 16,7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

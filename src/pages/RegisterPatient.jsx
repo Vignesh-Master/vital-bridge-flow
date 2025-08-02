@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
+import { patientAPI, signatureAPI } from '../services/api';
 
 const RegisterPatient = () => {
   const [formData, setFormData] = useState({
@@ -11,12 +12,29 @@ const RegisterPatient = () => {
     urgencyLevel: 'MEDIUM',
     medicalCondition: '',
     medicalHistory: '',
-    contactNumber: '',
+    currentMedications: '',
+    allergies: '',
+    dialysisStatus: '',
     address: '',
+    city: '',
+    state: '',
+    pincode: '',
+    contactNumber: '',
+    emergencyContact: '',
+    insuranceDetails: '',
     hospitalId: ''
   });
 
+  const [signatureData, setSignatureData] = useState({
+    signatureFile: null,
+    signerType: 'SELF', // SELF or GUARDIAN
+    guardianName: '',
+    guardianRelation: ''
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [verificationStatus, setVerificationStatus] = useState(null);
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const organs = ['Heart', 'Liver', 'Kidney', 'Lungs', 'Cornea', 'Skin', 'Bone', 'Pancreas'];
@@ -27,16 +45,100 @@ const RegisterPatient = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSignatureInputChange = (e) => {
+    const { name, value } = e.target;
+    setSignatureData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSignatureFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please upload a valid signature file (JPEG, PNG, or PDF)');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+
+      setSignatureData(prev => ({ ...prev, signatureFile: file }));
+
+      // Create preview for images
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => setSignaturePreview(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        setSignaturePreview(null);
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setVerificationStatus(null);
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Patient registration:', formData);
-      alert('Patient registered successfully!');
-      // Reset form
+      // Step 1: Validate signature upload
+      if (!signatureData.signatureFile) {
+        alert('Please upload a signature file');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Step 2: Create patient first
+      console.log('🏥 Step 1: Creating patient record...');
+      const patientResponse = await patientAPI.createPatient(formData);
+
+      if (!patientResponse.success) {
+        throw new Error(patientResponse.message || 'Failed to create patient');
+      }
+
+      const patientId = patientResponse.data.id;
+      console.log('✅ Patient created with ID:', patientId);
+
+      // Step 3: Upload and verify signature
+      console.log('🔐 Step 2: Uploading signature for verification...');
+      const signatureFormData = new FormData();
+      signatureFormData.append('signatureFile', signatureData.signatureFile);
+      signatureFormData.append('signerName', formData.patientName);
+      signatureFormData.append('signerType', signatureData.signerType);
+      signatureFormData.append('entityType', 'PATIENT');
+      signatureFormData.append('entityId', patientId);
+      signatureFormData.append('doctorId', 'DR001'); // Add doctor ID
+
+      if (signatureData.signerType === 'GUARDIAN') {
+        signatureFormData.append('guardianName', signatureData.guardianName);
+        signatureFormData.append('guardianRelation', signatureData.guardianRelation);
+      }
+
+      const signatureResponse = await signatureAPI.verifyAndStore(signatureFormData);
+
+      if (signatureResponse.success) {
+        setVerificationStatus({
+          status: 'success',
+          message: 'Signature verified and stored on blockchain!',
+          ipfsHash: signatureResponse.data.ipfsHash,
+          blockchainTx: signatureResponse.data.ethereumTxHash
+        });
+
+        alert(`✅ Patient registered successfully!\n🔐 Signature verified and stored on blockchain\n📦 IPFS Hash: ${signatureResponse.data.ipfsHash}`);
+      } else {
+        setVerificationStatus({
+          status: 'warning',
+          message: 'Patient created but signature verification failed: ' + signatureResponse.message
+        });
+
+        alert(`⚠️ Patient registered but signature verification failed.\nReason: ${signatureResponse.message}`);
+      }
+
+      // Reset form on success
       setFormData({
         patientName: '',
         age: '',
@@ -46,14 +148,37 @@ const RegisterPatient = () => {
         urgencyLevel: 'MEDIUM',
         medicalCondition: '',
         medicalHistory: '',
-        contactNumber: '',
+        currentMedications: '',
+        allergies: '',
+        dialysisStatus: '',
         address: '',
+        city: '',
+        state: '',
+        pincode: '',
+        contactNumber: '',
+        emergencyContact: '',
+        insuranceDetails: '',
         hospitalId: ''
       });
+
+      setSignatureData({
+        signatureFile: null,
+        signerType: 'SELF',
+        guardianName: '',
+        guardianRelation: ''
+      });
+
+      setSignaturePreview(null);
+
     } catch (error) {
-      alert('Error registering patient. Please try again.');
+      console.error('❌ Patient registration failed:', error);
+      alert(`❌ Error registering patient: ${error.message}`);
+      setVerificationStatus({
+        status: 'error',
+        message: 'Registration failed: ' + error.message
+      });
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -253,6 +378,145 @@ const RegisterPatient = () => {
                       required
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Signature Verification Section */}
+              <div className="form-section">
+                <h3 className="section-title">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                  </svg>
+                  Digital Signature Verification
+                </h3>
+
+                <div className="signature-upload-container">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Who is signing? *</label>
+                      <select
+                        name="signerType"
+                        value={signatureData.signerType}
+                        onChange={handleSignatureInputChange}
+                        className="form-select"
+                        required
+                      >
+                        <option value="SELF">Patient (Self)</option>
+                        <option value="GUARDIAN">Guardian/Family Member</option>
+                      </select>
+                    </div>
+
+                    {signatureData.signerType === 'GUARDIAN' && (
+                      <div className="form-group">
+                        <label className="form-label">Guardian Name *</label>
+                        <input
+                          type="text"
+                          name="guardianName"
+                          value={signatureData.guardianName}
+                          onChange={handleSignatureInputChange}
+                          className="form-input"
+                          placeholder="Full name of guardian"
+                          required
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {signatureData.signerType === 'GUARDIAN' && (
+                    <div className="form-group">
+                      <label className="form-label">Relationship to Patient *</label>
+                      <input
+                        type="text"
+                        name="guardianRelation"
+                        value={signatureData.guardianRelation}
+                        onChange={handleSignatureInputChange}
+                        className="form-input"
+                        placeholder="e.g., Spouse, Parent, Child"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <label className="form-label">Upload Signature *</label>
+                    <div className="signature-upload-area">
+                      <input
+                        type="file"
+                        id="signatureFile"
+                        accept="image/jpeg,image/jpg,image/png,application/pdf"
+                        onChange={handleSignatureFileChange}
+                        className="signature-file-input"
+                        required
+                      />
+                      <label htmlFor="signatureFile" className="signature-upload-label">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                          <polyline points="17,8 12,3 7,8"/>
+                          <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <div className="upload-text">
+                          <span className="upload-title">Click to upload signature</span>
+                          <span className="upload-subtitle">JPEG, PNG, or PDF (max 5MB)</span>
+                        </div>
+                      </label>
+                    </div>
+
+                    {signaturePreview && (
+                      <div className="signature-preview">
+                        <img src={signaturePreview} alt="Signature preview" className="signature-preview-image" />
+                      </div>
+                    )}
+
+                    {signatureData.signatureFile && (
+                      <div className="file-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14,2 14,8 20,8"/>
+                        </svg>
+                        <span>{signatureData.signatureFile.name}</span>
+                        <span className="file-size">({(signatureData.signatureFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {verificationStatus && (
+                    <div className={`verification-status ${verificationStatus.status}`}>
+                      <div className="status-icon">
+                        {verificationStatus.status === 'success' && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="20,6 9,17 4,12"/>
+                          </svg>
+                        )}
+                        {verificationStatus.status === 'error' && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                          </svg>
+                        )}
+                        {verificationStatus.status === 'warning' && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div className="status-content">
+                        <p className="status-message">{verificationStatus.message}</p>
+                        {verificationStatus.ipfsHash && (
+                          <div className="blockchain-info">
+                            <p><strong>IPFS Hash:</strong> <code>{verificationStatus.ipfsHash}</code></p>
+                            <p><strong>Blockchain Tx:</strong> <code>{verificationStatus.blockchainTx}</code></p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -459,6 +723,150 @@ const RegisterPatient = () => {
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+
+        /* Signature Upload Styles */
+        .signature-upload-container {
+          background: var(--gray-50);
+          border-radius: var(--border-radius);
+          padding: var(--spacing-lg);
+          border: 2px dashed var(--gray-300);
+        }
+
+        .signature-upload-area {
+          position: relative;
+          margin-top: var(--spacing-sm);
+        }
+
+        .signature-file-input {
+          position: absolute;
+          opacity: 0;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+
+        .signature-upload-label {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: var(--spacing-xl);
+          border: 2px dashed var(--primary-blue);
+          border-radius: var(--border-radius);
+          background: white;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .signature-upload-label:hover {
+          border-color: var(--primary-teal);
+          background: var(--gray-50);
+        }
+
+        .upload-text {
+          text-align: center;
+          margin-top: var(--spacing-sm);
+        }
+
+        .upload-title {
+          display: block;
+          font-weight: 600;
+          color: var(--primary-blue);
+          margin-bottom: var(--spacing-xs);
+        }
+
+        .upload-subtitle {
+          display: block;
+          font-size: 0.875rem;
+          color: var(--gray-600);
+        }
+
+        .signature-preview {
+          margin-top: var(--spacing-md);
+          text-align: center;
+        }
+
+        .signature-preview-image {
+          max-width: 300px;
+          max-height: 150px;
+          border: 1px solid var(--gray-300);
+          border-radius: var(--border-radius);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .file-info {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-sm);
+          margin-top: var(--spacing-sm);
+          padding: var(--spacing-sm);
+          background: white;
+          border-radius: var(--border-radius);
+          border: 1px solid var(--gray-300);
+        }
+
+        .file-size {
+          color: var(--gray-600);
+          font-size: 0.875rem;
+        }
+
+        .verification-status {
+          margin-top: var(--spacing-md);
+          padding: var(--spacing-md);
+          border-radius: var(--border-radius);
+          display: flex;
+          align-items: flex-start;
+          gap: var(--spacing-sm);
+        }
+
+        .verification-status.success {
+          background: #d1fae5;
+          border: 1px solid #10b981;
+          color: #065f46;
+        }
+
+        .verification-status.error {
+          background: #fee2e2;
+          border: 1px solid #ef4444;
+          color: #991b1b;
+        }
+
+        .verification-status.warning {
+          background: #fef3c7;
+          border: 1px solid #f59e0b;
+          color: #92400e;
+        }
+
+        .status-icon {
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        .status-content {
+          flex: 1;
+        }
+
+        .status-message {
+          margin: 0 0 var(--spacing-sm) 0;
+          font-weight: 500;
+        }
+
+        .blockchain-info {
+          font-size: 0.875rem;
+          opacity: 0.9;
+        }
+
+        .blockchain-info p {
+          margin: var(--spacing-xs) 0;
+        }
+
+        .blockchain-info code {
+          background: rgba(0, 0, 0, 0.1);
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-family: 'Courier New', monospace;
+          font-size: 0.8rem;
         }
 
         @media (max-width: 768px) {

@@ -86,15 +86,19 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Failed to load hospitals:', error);
-      // Fallback to hardcoded data
+      // Fallback to hardcoded data - show both hospitals for demo
+      const allHospitals = [
+        { id: 1, name: 'Apollo Hospital Mumbai', tenantId: 'apollo-mumbai', userId: 'mb-001' },
+        { id: 2, name: 'Apollo Hospital Chennai', tenantId: 'apollo-chennai', userId: 'ch-001' }
+      ];
+
       if (formData.state === 'Maharashtra') {
-        setHospitals([
-          { id: 1, name: 'Apollo Hospital Mumbai', tenantId: 'apollo-mumbai' }
-        ]);
+        setHospitals([allHospitals[0]]);
       } else if (formData.state === 'Tamil Nadu') {
-        setHospitals([
-          { id: 2, name: 'Apollo Hospital Chennai', tenantId: 'apollo-chennai' }
-        ]);
+        setHospitals([allHospitals[1]]);
+      } else {
+        // Show all hospitals if no state selected
+        setHospitals(allHospitals);
       }
     }
   };

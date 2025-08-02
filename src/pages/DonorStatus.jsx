@@ -37,9 +37,9 @@ const DonorStatus = () => {
       }
     } catch (error) {
       console.error('Failed to load donors:', error);
-      setError('Failed to load donors');
-      // Fallback to sample data for demo
-      setSampleDonors();
+      setError('Failed to load donors: ' + error.message);
+      // Don't fallback to sample data - show the error instead
+      setDonors([]);
     } finally {
       setLoading(false);
     }

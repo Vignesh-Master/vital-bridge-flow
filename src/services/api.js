@@ -346,9 +346,14 @@ export const aiMatchingAPI = {
 export const signatureAPI = {
   // Verify and store signature
   verifyAndStore: async (formData) => {
+    // Get tenant ID from localStorage (set during login)
+    const hospitalData = JSON.parse(localStorage.getItem('hospital_data') || '{}');
+    const tenantId = hospitalData.tenantId || 'apollo-chennai';
+
     const response = await api.post('/signatures/verify-and-store', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'X-Tenant-ID': tenantId,
       },
     });
     return response.data;
