@@ -16,10 +16,23 @@ import FAQs from "./pages/FAQs.jsx";
 import MatchingDashboard from "./pages/MatchingDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
+// Public Pages
+import PublicHome from "./pages/PublicHome.jsx";
+
 // Admin Pages
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import HospitalManagement from "./pages/admin/HospitalManagement.jsx";
+
+// Organization Pages
+import OrgLogin from "./pages/org/OrgLogin.jsx";
+import OrgPolicies from "./pages/org/OrgPolicies.jsx";
+import ProposePolicy from "./pages/org/ProposePolicy.jsx";
+import VotePolicy from "./pages/org/VotePolicy.jsx";
+
+// Utility Pages
+import Unauthorized from "./pages/Unauthorized.jsx";
+import SessionExpired from "./pages/SessionExpired.jsx";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +43,21 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          {/* Public Site */}
+          <Route path="/" element={<PublicHome />} />
+          
+          {/* Hospital Module */}
+          <Route path="/hospital/login" element={<Login />} />
+          <Route path="/hospital/forgot-password" element={<ForgotPassword />} />
+          <Route path="/hospital/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/hospital/donor-register" element={<ProtectedRoute><RegisterDonor /></ProtectedRoute>} />
+          <Route path="/hospital/patient-register" element={<ProtectedRoute><RegisterPatient /></ProtectedRoute>} />
+          <Route path="/hospital/donor-status" element={<ProtectedRoute><DonorStatus /></ProtectedRoute>} />
+          <Route path="/hospital/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
+          <Route path="/hospital/match-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
+          <Route path="/hospital/faq" element={<FAQs />} />
+          
+          {/* Legacy Routes (for backward compatibility) */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -41,12 +68,30 @@ const App = () => (
           <Route path="/matching-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
           <Route path="/faqs" element={<FAQs />} />
 
-          {/* Admin Routes */}
+          {/* Admin Module */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/hospitals" element={<HospitalManagement />} />
+          <Route path="/admin/organizations" element={<HospitalManagement />} />
+          <Route path="/admin/docs" element={<HospitalManagement />} />
+          <Route path="/admin/forgot-password" element={<ForgotPassword />} />
 
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Organization Module */}
+          <Route path="/org/login" element={<OrgLogin />} />
+          <Route path="/org/policies" element={<OrgPolicies />} />
+          <Route path="/org/propose" element={<ProposePolicy />} />
+          <Route path="/org/vote" element={<VotePolicy />} />
+          <Route path="/org/history" element={<OrgPolicies />} />
+          <Route path="/org/forgot-password" element={<ForgotPassword />} />
+
+          {/* Utility Pages */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/session-expired" element={<SessionExpired />} />
+
+          {/* Legacy Index (redirect to public home) */}
+          <Route path="/index" element={<PublicHome />} />
+
+          {/* 404 Page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
