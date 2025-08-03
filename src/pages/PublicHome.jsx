@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const PublicHome = () => {
@@ -9,9 +9,14 @@ const PublicHome = () => {
   const testimonialsRef = useRef(null);
   const faqRef = useRef(null);
   const contactRef = useRef(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
   const scrollToSection = (ref) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
   };
 
   return (
@@ -31,9 +36,6 @@ const PublicHome = () => {
               <button onClick={() => scrollToSection(faqRef)} className="nav-link">FAQs</button>
               <button onClick={() => scrollToSection(contactRef)} className="nav-link">Contact</button>
             </nav>
-            <div className="header-actions">
-              <Link to="/login" className="btn btn-primary">Hospital Login</Link>
-            </div>
           </div>
         </div>
       </header>
@@ -106,7 +108,20 @@ const PublicHome = () => {
               </div>
             </div>
             <div className="about-image">
-              <img src="/src/assets/medical-dashboard.jpg" alt="Medical Dashboard" />
+              <div className="medical-illustration">
+                <svg width="400" height="300" viewBox="0 0 400 300" fill="none">
+                  <rect x="50" y="50" width="300" height="200" rx="8" fill="var(--white)" stroke="var(--primary-blue)" strokeWidth="2"/>
+                  <rect x="70" y="80" width="80" height="40" rx="4" fill="var(--primary-blue)" fillOpacity="0.1"/>
+                  <rect x="160" y="80" width="80" height="40" rx="4" fill="var(--secondary-teal)" fillOpacity="0.1"/>
+                  <rect x="250" y="80" width="80" height="40" rx="4" fill="var(--accent-green)" fillOpacity="0.1"/>
+                  <rect x="70" y="140" width="260" height="80" rx="4" fill="var(--gray-50)"/>
+                  <circle cx="90" cy="160" r="8" fill="var(--primary-blue)"/>
+                  <circle cx="130" cy="160" r="8" fill="var(--secondary-teal)"/>
+                  <circle cx="170" cy="160" r="8" fill="var(--accent-green)"/>
+                  <circle cx="210" cy="160" r="8" fill="var(--warning-orange)"/>
+                  <path d="M90 180 L130 180 L170 160 L210 180" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -333,11 +348,11 @@ const PublicHome = () => {
           </div>
           <div className="faq-list">
             <div className="faq-item">
-              <div className="faq-question">
+              <div className="faq-question" onClick={() => toggleFaq(0)}>
                 <h3>How is patient data secured?</h3>
-                <span className="faq-toggle">+</span>
+                <span className="faq-toggle">{openFaq === 0 ? '−' : '+'}</span>
               </div>
-              <div className="faq-answer">
+              <div className={`faq-answer ${openFaq === 0 ? 'open' : ''}`}>
                 <p>
                   We use blockchain technology to create immutable records, IPFS for decentralized 
                   document storage, and advanced encryption to ensure patient data remains secure 
@@ -347,11 +362,11 @@ const PublicHome = () => {
             </div>
 
             <div className="faq-item">
-              <div className="faq-question">
+              <div className="faq-question" onClick={() => toggleFaq(1)}>
                 <h3>What is the policy voting system?</h3>
-                <span className="faq-toggle">+</span>
+                <span className="faq-toggle">{openFaq === 1 ? '−' : '+'}</span>
               </div>
-              <div className="faq-answer">
+              <div className={`faq-answer ${openFaq === 1 ? 'open' : ''}`}>
                 <p>
                   Healthcare organizations can propose policies affecting organ transplant procedures. 
                   Other organizations vote on these proposals, and policies with majority support 
@@ -361,11 +376,11 @@ const PublicHome = () => {
             </div>
 
             <div className="faq-item">
-              <div className="faq-question">
+              <div className="faq-question" onClick={() => toggleFaq(2)}>
                 <h3>How does AI matching work?</h3>
-                <span className="faq-toggle">+</span>
+                <span className="faq-toggle">{openFaq === 2 ? '−' : '+'}</span>
               </div>
-              <div className="faq-answer">
+              <div className={`faq-answer ${openFaq === 2 ? 'open' : ''}`}>
                 <p>
                   Our AI analyzes multiple factors including blood type compatibility, HLA matching, 
                   geographic distance, medical urgency, and active policies. It uses Random Forest 
@@ -375,11 +390,11 @@ const PublicHome = () => {
             </div>
 
             <div className="faq-item">
-              <div className="faq-question">
+              <div className="faq-question" onClick={() => toggleFaq(3)}>
                 <h3>Can hospitals maintain their autonomy?</h3>
-                <span className="faq-toggle">+</span>
+                <span className="faq-toggle">{openFaq === 3 ? '−' : '+'}</span>
               </div>
-              <div className="faq-answer">
+              <div className={`faq-answer ${openFaq === 3 ? 'open' : ''}`}>
                 <p>
                   Yes! Our multi-tenant architecture ensures each hospital maintains complete control 
                   over their data while enabling secure collaboration. Hospitals can choose which 
@@ -389,11 +404,11 @@ const PublicHome = () => {
             </div>
 
             <div className="faq-item">
-              <div className="faq-question">
+              <div className="faq-question" onClick={() => toggleFaq(4)}>
                 <h3>What about cross-border organ sharing?</h3>
-                <span className="faq-toggle">+</span>
+                <span className="faq-toggle">{openFaq === 4 ? '−' : '+'}</span>
               </div>
-              <div className="faq-answer">
+              <div className={`faq-answer ${openFaq === 4 ? 'open' : ''}`}>
                 <p>
                   OrganLink is designed for global collaboration. Our platform handles different 
                   regulatory frameworks, provides transparent policy voting for international 
@@ -797,14 +812,22 @@ const PublicHome = () => {
         }
 
         .faq-answer {
-          margin-top: var(--spacing-md);
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
           padding-left: var(--spacing-md);
           border-left: 3px solid var(--primary-blue);
+        }
+
+        .faq-answer.open {
+          max-height: 200px;
+          margin-top: var(--spacing-md);
         }
 
         .faq-answer p {
           color: var(--gray-600);
           line-height: 1.6;
+          padding: var(--spacing-md) 0;
         }
 
         /* Contact Styles */

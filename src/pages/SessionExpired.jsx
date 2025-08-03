@@ -23,15 +23,21 @@ const SessionExpired = () => {
           </div>
           
           <div className="error-actions">
-            <Link to="/login" className="btn btn-primary">
-              Login to Hospital Portal
-            </Link>
-            <Link to="/admin/login" className="btn btn-secondary">
-              Admin Login
-            </Link>
-            <Link to="/org/login" className="btn btn-secondary">
-              Organization Login
-            </Link>
+            <p className="login-note">Please visit the appropriate domain to log in:</p>
+            <div className="domain-info">
+              <div className="domain-item">
+                <strong>Public Site:</strong> organlink.org
+              </div>
+              <div className="domain-item">
+                <strong>Hospital Portal:</strong> hospitals.organlink.org
+              </div>
+              <div className="domain-item">
+                <strong>Organization Portal:</strong> orgs.organlink.org
+              </div>
+              <div className="domain-item">
+                <strong>Admin Portal:</strong> admin.organlink.org
+              </div>
+            </div>
           </div>
           
           <div className="additional-links">
@@ -92,11 +98,36 @@ const SessionExpired = () => {
         }
 
         .error-actions {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-md);
-          justify-content: center;
+          text-align: center;
           margin-bottom: var(--spacing-xl);
+        }
+
+        .login-note {
+          color: var(--gray-700);
+          font-weight: 500;
+          margin-bottom: var(--spacing-lg);
+        }
+
+        .domain-info {
+          background: var(--gray-50);
+          padding: var(--spacing-lg);
+          border-radius: var(--radius-md);
+          text-align: left;
+          max-width: 400px;
+          margin: 0 auto;
+        }
+
+        .domain-item {
+          margin-bottom: var(--spacing-md);
+          color: var(--gray-600);
+        }
+
+        .domain-item:last-child {
+          margin-bottom: 0;
+        }
+
+        .domain-item strong {
+          color: var(--primary-blue);
         }
 
         .additional-links {

@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
+import HospitalForgotPassword from "./pages/hospital/HospitalForgotPassword.jsx";
+import OrgForgotPassword from "./pages/org/OrgForgotPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import RegisterDonor from "./pages/RegisterDonor.jsx";
 import RegisterPatient from "./pages/RegisterPatient.jsx";
@@ -48,7 +50,7 @@ const App = () => (
           
           {/* Hospital Module */}
           <Route path="/hospital/login" element={<Login />} />
-          <Route path="/hospital/forgot-password" element={<ForgotPassword />} />
+          <Route path="/hospital/forgot-password" element={<HospitalForgotPassword />} />
           <Route path="/hospital/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/hospital/donor-register" element={<ProtectedRoute><RegisterDonor /></ProtectedRoute>} />
           <Route path="/hospital/patient-register" element={<ProtectedRoute><RegisterPatient /></ProtectedRoute>} />
@@ -82,7 +84,7 @@ const App = () => (
           <Route path="/org/propose" element={<ProposePolicy />} />
           <Route path="/org/vote" element={<VotePolicy />} />
           <Route path="/org/history" element={<OrgPolicies />} />
-          <Route path="/org/forgot-password" element={<ForgotPassword />} />
+          <Route path="/org/forgot-password" element={<OrgForgotPassword />} />
 
           {/* Utility Pages */}
           <Route path="/unauthorized" element={<Unauthorized />} />
