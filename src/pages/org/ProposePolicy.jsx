@@ -243,7 +243,7 @@ const ProposePolicy = () => {
                       <path d="M9 12L11 14L15 10" stroke="var(--accent-green)" strokeWidth="2"/>
                       <circle cx="12" cy="12" r="10" stroke="var(--accent-green)" strokeWidth="2"/>
                     </svg>
-                    <span>Approved policies (>50% support) are integrated into AI matching algorithms</span>
+                    <span>Approved policies (&gt;50% support) are integrated into AI matching algorithms</span>
                   </div>
                 </div>
               </div>

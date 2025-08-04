@@ -1,0 +1,183 @@
+.testimonial-carousel {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+  overflow: visible;
+  width: 100%;
+  margin: 0 auto 2.2rem auto;
+  max-width: 900px;
+  min-height: 220px;
+  transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.testimonial-card {
+  background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%);
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 1.5rem 1.2rem;
+  min-width: 260px;
+  max-width: 300px;
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: 1;
+  position: relative;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.testimonial-card:hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  transform: translateY(-6px) scale(1.03);
+}
+
+.testimonial-card-blur,
+.testimonial-card-blur.left,
+.testimonial-card-blur.right {
+  display: none !important;
+}
+
+.testimonial-card.enhanced {
+  background: #f3f7fb;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(26,35,126,0.13), 0 1.5px 8px 0 rgba(26,35,126,0.07);
+  border: 1.5px solid #dbe7f6;
+  padding: 1.7rem 1.2rem 1.3rem 1.2rem;
+  min-width: 260px;
+  max-width: 300px;
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 1;
+  position: relative;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.3s, transform 0.3s;
+  animation: cardPop 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes cardPop {
+  0% { transform: scale(0.97) translateY(20px); opacity: 0.7; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.testimonial-card.enhanced:first-child {
+  box-shadow: 0 8px 32px 0 rgba(26,35,126,0.13), -12px 0 32px -12px rgba(26,35,126,0.10);
+  mask-image: linear-gradient(to right, rgba(0,0,0,0.12) 0%, #000 18%, #000 100%);
+}
+.testimonial-card.enhanced:last-child {
+  box-shadow: 0 8px 32px 0 rgba(26,35,126,0.13), 12px 0 32px -12px rgba(26,35,126,0.10);
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.12) 0%, #000 18%, #000 100%);
+}
+
+.testimonial-card.enhanced.center {
+  transform: scale(1.07) translateY(-12px);
+  z-index: 2;
+  box-shadow: 0 16px 40px 0 rgba(26,35,126,0.18), 0 2px 12px 0 rgba(26,35,126,0.10);
+  border: 2.5px solid #fff;
+}
+
+.testimonial-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.7rem;
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 8px rgba(26,35,126,0.10);
+}
+.testimonial-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.testimonial-content {
+  font-size: 1.08rem;
+  color: #333;
+  margin-bottom: 1.2rem;
+}
+
+.testimonial-author {
+  text-align: left;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #1a237e;
+  margin-bottom: 0.2rem;
+}
+
+.author-title {
+  font-size: 0.97rem;
+  color: #607d8b;
+}
+
+.testimonial-carousel-outer {
+  position: relative;
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 0 0.5rem 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.testimonial-carousel-animated {
+  transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.testimonial-carousel-blur {
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.testimonial-carousel-blur-left {
+  left: 0;
+  background: linear-gradient(90deg, #fff 70%, rgba(255,255,255,0) 100%);
+}
+.testimonial-carousel-blur-right {
+  right: 0;
+  background: linear-gradient(270deg, #fff 70%, rgba(255,255,255,0) 100%);
+}
+
+.testimonial-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 1.2rem;
+}
+.testimonial-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cfd8dc;
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+  display: inline-block;
+}
+.testimonial-dot.active {
+  background: #1a237e;
+  transform: scale(1.2);
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+  margin: 0.5rem 0 0.7rem 0;
+}
+.star {
+  color: #b0bec5;
+  font-size: 1.15rem;
+  transition: color 0.2s;
+}
+.star.filled {
+  color: #ffb300;
+}

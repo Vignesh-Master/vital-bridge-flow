@@ -1,38 +1,32 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import Login from "./pages/Login.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import HospitalForgotPassword from "./pages/hospital/HospitalForgotPassword.jsx";
+
+import Index from "./pages/public/Index";
+import NotFound from "./pages/public/NotFound";
+import FAQs from "./pages/public/FAQs.jsx";
+import PublicHome from "./pages/PublicHome.jsx";
+import OrgLogin from "./pages/org/OrgLogin.jsx";
+import OrgPolicies from "./pages/org/OrgPolicies.jsx";
 import OrgForgotPassword from "./pages/org/OrgForgotPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import RegisterDonor from "./pages/RegisterDonor.jsx";
 import RegisterPatient from "./pages/RegisterPatient.jsx";
 import DonorStatus from "./pages/DonorStatus.jsx";
 import PatientStatus from "./pages/PatientStatus.jsx";
-import FAQs from "./pages/FAQs.jsx";
 import MatchingDashboard from "./pages/MatchingDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-
-// Public Pages
-import PublicHome from "./pages/PublicHome.jsx";
-
-// Admin Pages
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import HospitalManagement from "./pages/admin/HospitalManagement.jsx";
-
-// Organization Pages
-import OrgLogin from "./pages/org/OrgLogin.jsx";
-import OrgPolicies from "./pages/org/OrgPolicies.jsx";
 import ProposePolicy from "./pages/org/ProposePolicy.jsx";
 import VotePolicy from "./pages/org/VotePolicy.jsx";
-
-// Utility Pages
 import Unauthorized from "./pages/Unauthorized.jsx";
 import SessionExpired from "./pages/SessionExpired.jsx";
 

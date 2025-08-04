@@ -1,5 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaArrowUp } from 'react-icons/fa';
+import TestimonialCarousel from '../components/TestimonialCarousel';
+import AnimatedStat from '../components/AnimatedStat';
+import '../components/TestimonialCarousel.css';
 
 const PublicHome = () => {
   const homeRef = useRef(null);
@@ -10,13 +14,51 @@ const PublicHome = () => {
   const faqRef = useRef(null);
   const contactRef = useRef(null);
   const [openFaq, setOpenFaq] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Scroll to section with offset for sticky navbar
   const scrollToSection = (ref) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
+    const yOffset = -80; // Adjust based on navbar height
+    if (ref && ref.current) {
+      const y = ref.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
   };
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!aboutRef.current) return;
+      const aboutTop = aboutRef.current.getBoundingClientRect().top;
+      // Show button only when About section is in view (scrolled past hero)
+      setShowScrollTop(aboutTop <= 80);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const smoothReverseScrollToHero = () => {
+    if (!homeRef.current) return;
+    const startY = window.scrollY;
+    const endY = homeRef.current.offsetTop;
+    const distance = startY - endY;
+    const duration = 500; // ms, for a little faster scroll
+    let startTime = null;
+
+    function animateScroll(currentTime) {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 2); // ease-out
+      window.scrollTo(0, startY - distance * ease);
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    }
+    requestAnimationFrame(animateScroll);
   };
 
   return (
@@ -26,7 +68,7 @@ const PublicHome = () => {
         <div className="container">
           <div className="header-content">
             <div className="logo">
-              <h2>OrganLink</h2>
+              <h2 style={{ cursor: 'pointer' }} onClick={() => scrollToSection(homeRef)}>OrganLink</h2>
             </div>
             <nav className="nav">
               <button onClick={() => scrollToSection(homeRef)} className="nav-link">Home</button>
@@ -79,7 +121,7 @@ const PublicHome = () => {
       {/* About Section */}
       <section ref={aboutRef} className="about">
         <div className="container">
-          <div className="about-content">
+          <div className="about-content about-content-balanced">
             <div className="about-text">
               <h2 className="heading-2">Why Organ Transplant Matching Is Complex</h2>
               <p className="text-large">
@@ -92,22 +134,8 @@ const PublicHome = () => {
                 blockchain technology, and collaborative policy-making to create a unified, 
                 secure, and efficient organ donation ecosystem.
               </p>
-              <div className="about-stats">
-                <div className="stat">
-                  <h3 className="stat-number">107,000+</h3>
-                  <p className="stat-label">People waiting for organs</p>
-                </div>
-                <div className="stat">
-                  <h3 className="stat-number">17</h3>
-                  <p className="stat-label">People die daily waiting</p>
-                </div>
-                <div className="stat">
-                  <h3 className="stat-number">95%</h3>
-                  <p className="stat-label">Success rate with AI matching</p>
-                </div>
-              </div>
             </div>
-            <div className="about-image">
+            <div className="about-image about-image-balanced">
               <div className="medical-illustration">
                 <svg width="400" height="300" viewBox="0 0 400 300" fill="none">
                   <rect x="50" y="50" width="300" height="200" rx="8" fill="var(--white)" stroke="var(--primary-blue)" strokeWidth="2"/>
@@ -124,7 +152,96 @@ const PublicHome = () => {
               </div>
             </div>
           </div>
+          <div className="about-stats-strip enhanced-stats-strip">
+            <AnimatedStat value="107000" label="People waiting for organs" suffix="+" />
+            <AnimatedStat value={17} label="People die daily waiting" suffix="+" />
+            <AnimatedStat value={95} label="Success rate with AI matching" suffix="%" />
+            <AnimatedStat value={1200} label="Hospitals Connected" suffix="+" />
+            <AnimatedStat value={3500} label="Transplants Facilitated" suffix="+" />
+          </div>
         </div>
+        <style>{`
+          .about-content-balanced {
+            display: flex;
+            align-items: stretch;
+            gap: 2.5rem;
+            min-height: 350px;
+          }
+          .about-text, .about-image-balanced {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
+          .about-image-balanced {
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 400px;
+          }
+          .enhanced-stats-strip {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            border-radius: 0;
+            background: #2b5aa1;
+            box-shadow: 0 8px 32px rgba(43,90,161,0.10);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            padding: 2.5rem 0 2rem 0;
+            color: #fff;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+            z-index: 1;
+          }
+          .enhanced-stats-strip .stat {
+            text-align: center;
+            min-width: 160px;
+            margin: 0 1.5rem;
+          }
+          .enhanced-stats-strip .stat-label {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            color: #e3eefd;
+          }
+          .enhanced-stats-strip .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 0.25rem;
+            transition: color 0.2s;
+          }
+          @media (max-width: 900px) {
+            .about-content-balanced {
+              flex-direction: column;
+              min-height: unset;
+            }
+            .about-image-balanced {
+              margin-top: 2rem;
+              max-height: 250px;
+            }
+            .enhanced-stats-strip {
+              flex-direction: column;
+              gap: 1.5rem;
+              padding: 2rem 0 1.5rem 0;
+              border-radius: 0;
+              left: 0;
+              margin-left: 0;
+              width: 100%;
+            }
+            .enhanced-stats-strip .stat {
+              margin: 0.5rem 0;
+            }
+          }
+        `}</style>
       </section>
 
       {/* Features Section */}
@@ -134,98 +251,131 @@ const PublicHome = () => {
             <h2 className="heading-2">Revolutionary Features</h2>
             <p className="text-large">Cutting-edge technology for life-saving solutions</p>
           </div>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L13.09 6.26L18 7L13.09 7.74L12 12L10.91 7.74L6 7L10.91 6.26L12 2Z" fill="var(--primary-blue)"/>
-                  <path d="M19 15L20.09 17.26L23 18L20.09 18.74L19 21L17.91 18.74L15 18L17.91 17.26L19 15Z" fill="var(--secondary-teal)"/>
-                </svg>
+          <div className="features-box">
+            <div className="features-grid-3x2">
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L13.09 6.26L18 7L13.09 7.74L12 12L10.91 7.74L6 7L10.91 6.26L12 2Z" fill="var(--primary-blue)"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">AI-based Matching</h3>
+                <p className="feature-description">Advanced machine learning algorithms analyze compatibility factors, medical history, and urgency levels for optimal donor-patient matching.</p>
               </div>
-              <h3 className="feature-title">AI-based Matching</h3>
-              <p className="feature-description">
-                Advanced machine learning algorithms analyze compatibility factors, 
-                medical history, and urgency levels for optimal donor-patient matching.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
-                  <path d="M2 17L12 22L22 17" stroke="var(--secondary-teal)" strokeWidth="2" fill="none"/>
-                  <path d="M2 12L12 17L22 12" stroke="var(--accent-green)" strokeWidth="2" fill="none"/>
-                </svg>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Blockchain Security</h3>
+                <p className="feature-description">Immutable records on Ethereum blockchain ensure data integrity, transparency, and fraud prevention in organ donation processes.</p>
               </div>
-              <h3 className="feature-title">Blockchain Security</h3>
-              <p className="feature-description">
-                Immutable records on Ethereum blockchain ensure data integrity, 
-                transparency, and fraud prevention in organ donation processes.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="3" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  <path d="M12 1V3" stroke="var(--secondary-teal)" strokeWidth="2"/>
-                  <path d="M12 21V23" stroke="var(--secondary-teal)" strokeWidth="2"/>
-                  <path d="M4.22 4.22L5.64 5.64" stroke="var(--accent-green)" strokeWidth="2"/>
-                  <path d="M18.36 18.36L19.78 19.78" stroke="var(--accent-green)" strokeWidth="2"/>
-                </svg>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="var(--primary-blue)" strokeWidth="2"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">IPFS Document Storage</h3>
+                <p className="feature-description">Medical documents are securely stored and shared using decentralized IPFS technology.</p>
               </div>
-              <h3 className="feature-title">IPFS Document Storage</h3>
-              <p className="feature-description">
-                Decentralized storage ensures documents are always available, 
-                tamper-proof, and accessible across the global network.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 9L12 2L21 9V20A2 2 0 0 1 19 22H5A2 2 0 0 1 3 20V9Z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
-                  <polyline points="9,22 9,12 15,12 15,22" stroke="var(--secondary-teal)" strokeWidth="2"/>
-                </svg>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="var(--primary-blue)" strokeWidth="2"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Compliance & Transparency</h3>
+                <p className="feature-description">Automated policy checks and transparent audit trails for regulatory compliance.</p>
               </div>
-              <h3 className="feature-title">Hospital Collaboration</h3>
-              <p className="feature-description">
-                Secure multi-tenant system enables hospitals to collaborate 
-                while maintaining data privacy and institutional autonomy.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 13V6A6 6 0 0 0 6 6V13" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
-                  <rect x="2" y="13" width="20" height="8" rx="2" ry="2" stroke="var(--secondary-teal)" strokeWidth="2" fill="none"/>
-                  <circle cx="8" cy="17" r="1" fill="var(--accent-green)"/>
-                  <circle cx="16" cy="17" r="1" fill="var(--accent-green)"/>
-                </svg>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="4" width="16" height="16" rx="4" stroke="var(--primary-blue)" strokeWidth="2"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Real-time Notifications</h3>
+                <p className="feature-description">Instant alerts for organ matches, policy updates, and critical events for all stakeholders.</p>
               </div>
-              <h3 className="feature-title">Global Policy Voting</h3>
-              <p className="feature-description">
-                Democratic governance system where healthcare organizations 
-                propose and vote on policies affecting organ transplant procedures.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  <polyline points="12,6 12,12 16,14" stroke="var(--secondary-teal)" strokeWidth="2"/>
-                </svg>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2v20M2 12h20" stroke="var(--primary-blue)" strokeWidth="2"/>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Global Collaboration</h3>
+                <p className="feature-description">Connects hospitals, organizations, and authorities worldwide for a unified donation ecosystem.</p>
               </div>
-              <h3 className="feature-title">Real-time Notifications</h3>
-              <p className="feature-description">
-                Instant alerts for organ matches, policy updates, and critical 
-                events ensure timely decision-making and response.
-              </p>
             </div>
           </div>
         </div>
+        <style>{`
+          .features-box {
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(43,90,161,0.10);
+            padding: 2.5rem 2rem 2.2rem 2rem;
+            margin: 0 auto;
+            max-width: 1100px;
+          }
+          .features-grid-3x2 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1.7rem 2.2rem;
+          }
+          .feature-card {
+            background: none;
+            box-shadow: none;
+            border-radius: 1rem;
+            padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+            margin: 0;
+            min-width: 0;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+          }
+          .feature-card:hover {
+            background: #fafdff;
+            box-shadow: 0 4px 16px rgba(43,90,161,0.10);
+            transform: translateY(-6px) scale(1.03);
+          }
+          .feature-icon {
+            margin-bottom: 1.1rem;
+          }
+          .feature-title {
+            font-size: 1.13rem;
+            font-weight: 700;
+            color: #1a3766;
+            margin-bottom: 0.5rem;
+            text-align: center;
+          }
+          .feature-description {
+            font-size: 0.98rem;
+            color: #3a4a5d;
+            text-align: center;
+            margin-bottom: 0.2rem;
+          }
+          @media (max-width: 900px) {
+            .features-grid-3x2 {
+              grid-template-columns: 1fr 1fr;
+              grid-template-rows: repeat(3, 1fr);
+            }
+          }
+          @media (max-width: 600px) {
+            .features-box {
+              padding: 1.2rem 0.5rem;
+            }
+            .features-grid-3x2 {
+              grid-template-columns: 1fr;
+              grid-template-rows: repeat(6, 1fr);
+              gap: 1.1rem;
+            }
+          }
+        `}</style>
       </section>
 
       {/* Workflow Section */}
@@ -237,106 +387,135 @@ const PublicHome = () => {
           </div>
           <div className="workflow-steps">
             <div className="workflow-step">
-              <div className="step-number">1</div>
-              <div className="step-content">
-                <h3 className="step-title">Register</h3>
-                <p className="step-description">Hospitals register donors and patients with medical details</p>
-              </div>
+              <div className="step-circle">1</div>
+              <div className="step-title">Register</div>
+              <div className="step-desc">Hospitals register donors and patients with medical details</div>
             </div>
             <div className="workflow-arrow">→</div>
-            
             <div className="workflow-step">
-              <div className="step-number">2</div>
-              <div className="step-content">
-                <h3 className="step-title">Upload</h3>
-                <p className="step-description">Medical documents verified via OCR and stored on IPFS</p>
-              </div>
+              <div className="step-circle">2</div>
+              <div className="step-title">Upload</div>
+              <div className="step-desc">Medical documents verified via OCR and stored on IPFS</div>
             </div>
             <div className="workflow-arrow">→</div>
-            
             <div className="workflow-step">
-              <div className="step-number">3</div>
-              <div className="step-content">
-                <h3 className="step-title">AI Match</h3>
-                <p className="step-description">Advanced algorithms find optimal donor-patient matches</p>
-              </div>
+              <div className="step-circle">3</div>
+              <div className="step-title">AI Match</div>
+              <div className="step-desc">Advanced algorithms find optimal donor-patient matches</div>
             </div>
             <div className="workflow-arrow">→</div>
-            
             <div className="workflow-step">
-              <div className="step-number">4</div>
-              <div className="step-content">
-                <h3 className="step-title">Notify</h3>
-                <p className="step-description">Real-time notifications sent to relevant hospitals</p>
-              </div>
+              <div className="step-circle">4</div>
+              <div className="step-title">Notify</div>
+              <div className="step-desc">Real-time notifications sent to relevant hospitals</div>
             </div>
             <div className="workflow-arrow">→</div>
-            
             <div className="workflow-step">
-              <div className="step-number">5</div>
-              <div className="step-content">
-                <h3 className="step-title">Transplant</h3>
-                <p className="step-description">Coordinated transplant process with blockchain records</p>
-              </div>
+              <div className="step-circle">5</div>
+              <div className="step-title">Transplant</div>
+              <div className="step-desc">Coordinated transplant process with blockchain records</div>
             </div>
           </div>
         </div>
+        <style>{`
+          .workflow {
+            background: #fafdff;
+            padding: 3.5rem 0 3.5rem 0;
+          }
+          .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+          }
+          .workflow-step {
+            background: #fff;
+            border-radius: 1.2rem;
+            box-shadow: 0 4px 24px rgba(43,90,161,0.08);
+            padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+            min-width: 180px;
+            max-width: 210px;
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.2s, transform 0.2s;
+          }
+          .workflow-step:hover {
+            box-shadow: 0 8px 32px rgba(43,90,161,0.16);
+            transform: translateY(-8px) scale(1.04);
+          }
+          .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #2b5aa1;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.1rem;
+            box-shadow: 0 2px 8px rgba(43,90,161,0.13);
+            border: 3px solid #e3eefd;
+          }
+          .step-title {
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: #1a3766;
+            margin-bottom: 0.5rem;
+            text-align: center;
+          }
+          .step-desc {
+            font-size: 1rem;
+            color: #3a4a5d;
+            text-align: center;
+            margin-bottom: 0.2rem;
+          }
+          .workflow-arrow {
+            font-size: 2.2rem;
+            color: #b0c7e6;
+            align-self: center;
+            margin: 0 0.2rem;
+            user-select: none;
+          }
+          @media (max-width: 1100px) {
+            .workflow-steps {
+              flex-wrap: wrap;
+              gap: 1.5rem;
+            }
+            .workflow-step {
+              min-width: 160px;
+              max-width: 100%;
+            }
+          }
+          @media (max-width: 700px) {
+            .workflow-steps {
+              flex-direction: column;
+              align-items: center;
+              gap: 0.5rem;
+            }
+            .workflow-arrow {
+              display: none;
+            }
+            .workflow-step {
+              width: 100%;
+              min-width: unset;
+              margin-bottom: 1.2rem;
+            }
+          }
+        `}</style>
       </section>
 
       {/* Testimonials Section */}
       <section ref={testimonialsRef} className="testimonials">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="heading-2">Trusted by Healthcare Professionals</h2>
-            <p className="text-large">What medical experts say about OrganLink</p>
-          </div>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p className="testimonial-text">
-                  "OrganLink has revolutionized our organ matching process. The AI recommendations 
-                  have significantly improved our success rates and reduced waiting times for patients."
-                </p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-info">
-                  <h4 className="author-name">Dr. Meena Patel</h4>
-                  <p className="author-title">Transplant Coordinator, Apollo Hospital</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p className="testimonial-text">
-                  "The blockchain security and transparent policy voting system gives us confidence 
-                  in the integrity of the organ allocation process. It's a game-changer for healthcare."
-                </p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-info">
-                  <h4 className="author-name">Rajesh Kumar</h4>
-                  <p className="author-title">NGO Coordinator, Save Lives Foundation</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p className="testimonial-text">
-                  "The cross-hospital collaboration feature has enabled us to find matches that 
-                  would have been impossible with traditional systems. Lives are being saved."
-                </p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-info">
-                  <h4 className="author-name">Dr. Sarah Johnson</h4>
-                  <p className="author-title">Chief Medical Officer, Global Health Alliance</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <h2 className="section-title">Testimonials</h2>
+        <TestimonialCarousel />
       </section>
 
       {/* FAQ Section */}
@@ -370,7 +549,7 @@ const PublicHome = () => {
                 <p>
                   Healthcare organizations can propose policies affecting organ transplant procedures. 
                   Other organizations vote on these proposals, and policies with majority support 
-                  (>50%) are automatically integrated into our AI matching algorithms.
+                  (&gt;50%) are automatically integrated into our AI matching algorithms.
                 </p>
               </div>
             </div>
@@ -511,11 +690,24 @@ const PublicHome = () => {
         </div>
       </footer>
 
-      <style jsx>{`
+      {showScrollTop && (
+        <button
+          className="scroll-top-btn"
+          onClick={smoothReverseScrollToHero}
+          aria-label="Scroll to top"
+        >
+          <FaArrowUp size={22} />
+        </button>
+      )}
+
+      <style>{`
         .public-home {
           min-height: 100vh;
+          scroll-behavior: smooth;
         }
-
+        html {
+          scroll-behavior: smooth;
+        }
         /* Header Styles */
         .header {
           position: fixed;
@@ -543,7 +735,7 @@ const PublicHome = () => {
 
         .nav {
           display: flex;
-          gap: var(--spacing-xl);
+          gap: var(--spacing-md);
         }
 
         .nav-link {
@@ -552,11 +744,15 @@ const PublicHome = () => {
           color: var(--gray-700);
           font-weight: 500;
           cursor: pointer;
-          transition: color var(--transition-normal);
+          transition: color var(--transition-normal), background 0.2s;
+          font-size: 1.15rem;
+          padding: 0.75rem 1.2rem;
+          border-radius: var(--radius-md);
         }
 
         .nav-link:hover {
           color: var(--primary-blue);
+          background: var(--gray-100);
         }
 
         /* Hero Styles */
@@ -606,42 +802,40 @@ const PublicHome = () => {
         }
 
         .about-content {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: var(--spacing-3xl);
-          align-items: center;
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          gap: 2.5rem;
+        }
+
+        .about-text {
+          flex: 1;
+        }
+
+        .about-image {
+          align-self: flex-start;
+          margin-top: -32px;
+        }
+
+        .about-stats-row {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+          margin-top: 2.2rem;
+          margin-bottom: 0.5rem;
         }
 
         .about-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--spacing-lg);
-          margin-top: var(--spacing-2xl);
+          display: flex;
+          flex-direction: row;
+          gap: 2.5rem;
+          width: 100%;
+          justify-content: flex-start;
         }
 
         .stat {
-          text-align: center;
-          padding: var(--spacing-lg);
-          background: var(--gray-50);
-          border-radius: var(--radius-lg);
-        }
-
-        .stat-number {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: var(--primary-blue);
-          margin-bottom: var(--spacing-sm);
-        }
-
-        .stat-label {
-          color: var(--gray-600);
-          font-size: 0.875rem;
-        }
-
-        .about-image img {
-          width: 100%;
-          border-radius: var(--radius-xl);
-          box-shadow: var(--shadow-lg);
+          min-width: 120px;
+          text-align: left;
         }
 
         /* Features Styles */
@@ -746,35 +940,10 @@ const PublicHome = () => {
           background: var(--gray-50);
         }
 
-        .testimonials-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: var(--spacing-2xl);
-        }
-
-        .testimonial-card {
-          background: var(--white);
-          padding: var(--spacing-2xl);
-          border-radius: var(--radius-xl);
-          box-shadow: var(--shadow-md);
-        }
-
-        .testimonial-text {
-          font-style: italic;
-          color: var(--gray-700);
-          margin-bottom: var(--spacing-lg);
-          line-height: 1.6;
-        }
-
-        .author-name {
+        .section-title {
+          text-align: center;
+          margin-bottom: var(--spacing-3xl);
           color: var(--gray-900);
-          margin-bottom: var(--spacing-xs);
-        }
-
-        .author-title {
-          color: var(--primary-blue);
-          font-size: 0.875rem;
-          font-weight: 500;
         }
 
         /* FAQ Styles */
@@ -922,6 +1091,33 @@ const PublicHome = () => {
           padding-top: var(--spacing-lg);
           border-top: 1px solid var(--gray-700);
           color: var(--gray-400);
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top-btn {
+          position: fixed;
+          bottom: 2.2rem;
+          right: 2.2rem;
+          width: 54px;
+          height: 54px;
+          border-radius: 50%;
+          background: #2b5aa1;
+          color: #fff;
+          border: none;
+          box-shadow: 0 4px 16px rgba(43,90,161,0.18);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 1000;
+          transition: background 0.2s, box-shadow 0.2s, opacity 0.3s;
+          opacity: 0.92;
+        }
+
+        .scroll-top-btn:hover {
+          background: #1a3766;
+          box-shadow: 0 8px 32px rgba(43,90,161,0.22);
+          opacity: 1;
         }
 
         /* Responsive Design */
