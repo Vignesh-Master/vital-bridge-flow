@@ -25,6 +25,18 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import HospitalManagement from "./pages/admin/HospitalManagement.jsx";
+<<<<<<< HEAD
+=======
+import CreateHospital from "./pages/admin/CreateHospital.jsx";
+import CreateOrganization from "./pages/admin/CreateOrganization.jsx";
+import OrganizationManagement from "./pages/admin/OrganizationManagement.jsx";
+import Statistics from "./pages/admin/Statistics.jsx";
+import ResetPassword from "./pages/admin/ResetPassword.jsx";
+
+// Organization Pages
+import OrgLogin from "./pages/org/OrgLogin.jsx";
+import OrgPolicies from "./pages/org/OrgPolicies.jsx";
+>>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d
 import ProposePolicy from "./pages/org/ProposePolicy.jsx";
 import VotePolicy from "./pages/org/VotePolicy.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
@@ -67,10 +79,12 @@ const App = () => (
           {/* Admin Module */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/create-hospital" element={<CreateHospital />} />
+          <Route path="/admin/create-org" element={<CreateOrganization />} />
           <Route path="/admin/hospitals" element={<HospitalManagement />} />
-          <Route path="/admin/organizations" element={<HospitalManagement />} />
-          <Route path="/admin/docs" element={<HospitalManagement />} />
-          <Route path="/admin/forgot-password" element={<ForgotPassword />} />
+          <Route path="/admin/organizations" element={<OrganizationManagement />} />
+          <Route path="/admin/statistics" element={<Statistics />} />
+          <Route path="/admin/reset-password" element={<ResetPassword />} />
 
           {/* Organization Module */}
           <Route path="/org/login" element={<OrgLogin />} />

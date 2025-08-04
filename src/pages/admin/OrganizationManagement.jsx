@@ -1,56 +1,60 @@
-<<<<<<< HEAD
-export default function HospitalManagement() {
-  return <div>Hospital Management Placeholder</div>;
-}
-=======
 import React, { useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 
-const HospitalManagement = () => {
+const OrganizationManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [hospitals] = useState([
+  const [organizations] = useState([
     {
       id: 1,
-      name: 'Apollo Hospital Chennai',
-      code: 'CH-001',
-      location: 'Chennai, Tamil Nadu',
-      contactPerson: 'Dr. Raj Kumar',
-      email: 'admin@apollo-chennai.com',
+      name: 'Heart Foundation India',
+      code: 'NGO-001',
+      type: 'NGO',
+      contactPerson: 'Dr. Sarah Johnson',
+      email: 'contact@heartfoundation.org',
       phone: '+91 9876543210',
-      license: 'LIC001',
+      canPropose: true,
+      canVote: true,
       status: 'active',
+      proposalCount: 5,
+      voteCount: 23,
       createdAt: '2024-01-15'
     },
     {
       id: 2,
-      name: 'Fortis Hospital Mumbai',
-      code: 'MB-001',
-      location: 'Mumbai, Maharashtra',
-      contactPerson: 'Dr. Priya Sharma',
-      email: 'admin@fortis-mumbai.com',
+      name: 'Ministry of Health',
+      code: 'GOV-001',
+      type: 'Government',
+      contactPerson: 'Mr. Rajesh Kumar',
+      email: 'health@gov.in',
       phone: '+91 9876543211',
-      license: 'LIC002',
+      canPropose: true,
+      canVote: true,
       status: 'active',
+      proposalCount: 12,
+      voteCount: 45,
       createdAt: '2024-01-20'
     },
     {
       id: 3,
-      name: 'AIIMS Delhi',
-      code: 'DL-001',
-      location: 'New Delhi, Delhi',
-      contactPerson: 'Dr. Amit Singh',
-      email: 'admin@aiims-delhi.com',
+      name: 'Medical Research Institute',
+      code: 'RES-001',
+      type: 'Research',
+      contactPerson: 'Dr. Priya Sharma',
+      email: 'research@mri.edu',
       phone: '+91 9876543212',
-      license: 'LIC003',
-      status: 'inactive',
+      canPropose: false,
+      canVote: true,
+      status: 'active',
+      proposalCount: 0,
+      voteCount: 18,
       createdAt: '2024-02-01'
     }
   ]);
 
-  const filteredHospitals = hospitals.filter(hospital =>
-    hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    hospital.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    hospital.location.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOrganizations = organizations.filter(org =>
+    org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    org.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    org.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusBadge = (status) => {
@@ -59,21 +63,36 @@ const HospitalManagement = () => {
       : <span className="status-badge status-high">Inactive</span>;
   };
 
+  const getTypeBadge = (type) => {
+    const typeClasses = {
+      'NGO': 'type-badge type-ngo',
+      'Government': 'type-badge type-government',
+      'Research': 'type-badge type-research',
+      'Medical': 'type-badge type-medical'
+    };
+    
+    return (
+      <span className={typeClasses[type] || 'type-badge type-default'}>
+        {type}
+      </span>
+    );
+  };
+
   return (
     <AdminLayout>
-      <div className="hospital-management-page">
+      <div className="organization-management-page">
         <div className="container">
           {/* Header */}
           <div className="page-header">
             <div className="header-content">
-              <h1 className="heading-1">Hospital Management</h1>
-              <p className="text-large">Manage hospitals, their details, and access permissions</p>
+              <h1 className="heading-1">Organization Management</h1>
+              <p className="text-large">Manage organizations, their permissions, and policy participation</p>
             </div>
             <button className="btn btn-primary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14m-7-7h14"/>
               </svg>
-              Add Hospital
+              Add Organization
             </button>
           </div>
 
@@ -91,7 +110,7 @@ const HospitalManagement = () => {
                 <input
                   type="text"
                   className="form-input search-input"
-                  placeholder="Search hospitals by name, code, or location..."
+                  placeholder="Search organizations by name, code, or type..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -105,13 +124,13 @@ const HospitalManagement = () => {
             </div>
           </div>
 
-          {/* Hospitals Table */}
+          {/* Organizations Table */}
           <div className="table-card card">
             <div className="card-header">
               <div className="table-header">
                 <div>
-                  <h3 className="heading-3">Hospitals ({filteredHospitals.length})</h3>
-                  <p className="text-normal">Complete list of registered hospitals in the system</p>
+                  <h3 className="heading-3">Organizations ({filteredOrganizations.length})</h3>
+                  <p className="text-normal">Complete list of registered organizations in the system</p>
                 </div>
               </div>
             </div>
@@ -119,32 +138,52 @@ const HospitalManagement = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Hospital Details</th>
+                    <th>Organization Details</th>
                     <th>Code</th>
+                    <th>Type</th>
                     <th>Contact Person</th>
-                    <th>Location</th>
+                    <th>Permissions</th>
+                    <th>Activity</th>
                     <th>Status</th>
-                    <th>Created</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredHospitals.map((hospital) => (
-                    <tr key={hospital.id}>
+                  {filteredOrganizations.map((org) => (
+                    <tr key={org.id}>
                       <td>
-                        <div className="hospital-details">
-                          <div className="hospital-name">{hospital.name}</div>
-                          <div className="hospital-email">{hospital.email}</div>
-                          <div className="hospital-phone">{hospital.phone}</div>
+                        <div className="org-details">
+                          <div className="org-name">{org.name}</div>
+                          <div className="org-email">{org.email}</div>
+                          <div className="org-phone">{org.phone}</div>
                         </div>
                       </td>
                       <td>
-                        <span className="code-badge">{hospital.code}</span>
+                        <span className="code-badge">{org.code}</span>
                       </td>
-                      <td>{hospital.contactPerson}</td>
-                      <td>{hospital.location}</td>
-                      <td>{getStatusBadge(hospital.status)}</td>
-                      <td className="created-date">{hospital.createdAt}</td>
+                      <td>{getTypeBadge(org.type)}</td>
+                      <td>{org.contactPerson}</td>
+                      <td>
+                        <div className="permissions-list">
+                          {org.canPropose && (
+                            <span className="permission-badge propose">
+                              📝 Can Propose
+                            </span>
+                          )}
+                          {org.canVote && (
+                            <span className="permission-badge vote">
+                              🗳️ Can Vote
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="activity-stats">
+                          <div className="stat-item">{org.proposalCount} proposals</div>
+                          <div className="stat-item secondary">{org.voteCount} votes cast</div>
+                        </div>
+                      </td>
+                      <td>{getStatusBadge(org.status)}</td>
                       <td>
                         <div className="actions-dropdown">
                           <button className="action-btn">
@@ -167,7 +206,15 @@ const HospitalManagement = () => {
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                 <path d="m18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>
                               </svg>
-                              Edit Hospital
+                              Edit Organization
+                            </button>
+                            <button className="dropdown-item">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="m9 12 2 2 4-4"/>
+                                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                              </svg>
+                              Manage Permissions
                             </button>
                             <button className="dropdown-item">
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -182,7 +229,7 @@ const HospitalManagement = () => {
                                 <path d="m3 6 3 18h12l3-18"/>
                                 <path d="M19 6V4a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2"/>
                               </svg>
-                              Delete Hospital
+                              Delete Organization
                             </button>
                           </div>
                         </div>
@@ -198,31 +245,38 @@ const HospitalManagement = () => {
           <div className="summary-grid">
             <div className="summary-card card">
               <div className="summary-content">
-                <p className="summary-label">Active Hospitals</p>
-                <h3 className="summary-value">{hospitals.filter(h => h.status === 'active').length}</h3>
+                <p className="summary-label">Total Organizations</p>
+                <h3 className="summary-value">{organizations.length}</h3>
               </div>
-              <div className="summary-icon active">🏥</div>
+              <div className="summary-icon">🏢</div>
             </div>
             <div className="summary-card card">
               <div className="summary-content">
-                <p className="summary-label">Inactive Hospitals</p>
-                <h3 className="summary-value">{hospitals.filter(h => h.status === 'inactive').length}</h3>
+                <p className="summary-label">Can Propose</p>
+                <h3 className="summary-value">{organizations.filter(o => o.canPropose).length}</h3>
               </div>
-              <div className="summary-icon inactive">🚫</div>
+              <div className="summary-icon">📝</div>
             </div>
             <div className="summary-card card">
               <div className="summary-content">
-                <p className="summary-label">Total Hospitals</p>
-                <h3 className="summary-value">{hospitals.length}</h3>
+                <p className="summary-label">Can Vote</p>
+                <h3 className="summary-value">{organizations.filter(o => o.canVote).length}</h3>
               </div>
-              <div className="summary-icon total">📊</div>
+              <div className="summary-icon">🗳️</div>
+            </div>
+            <div className="summary-card card">
+              <div className="summary-content">
+                <p className="summary-label">Total Proposals</p>
+                <h3 className="summary-value">{organizations.reduce((sum, o) => sum + o.proposalCount, 0)}</h3>
+              </div>
+              <div className="summary-icon">📊</div>
             </div>
           </div>
         </div>
       </div>
 
       <style jsx>{`
-        .hospital-management-page {
+        .organization-management-page {
           min-height: calc(100vh - 200px);
           padding: var(--spacing-xl) 0;
         }
@@ -279,19 +333,19 @@ const HospitalManagement = () => {
           overflow-x: auto;
         }
 
-        .hospital-details {
+        .org-details {
           display: flex;
           flex-direction: column;
           gap: var(--spacing-xs);
         }
 
-        .hospital-name {
+        .org-name {
           font-weight: 600;
           color: var(--gray-900);
         }
 
-        .hospital-email,
-        .hospital-phone {
+        .org-email,
+        .org-phone {
           font-size: 0.875rem;
           color: var(--gray-600);
         }
@@ -306,7 +360,78 @@ const HospitalManagement = () => {
           font-weight: 500;
         }
 
-        .created-date {
+        .type-badge {
+          display: inline-block;
+          padding: var(--spacing-xs) var(--spacing-sm);
+          border-radius: var(--radius-sm);
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .type-ngo {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #3b82f6;
+        }
+
+        .type-government {
+          background-color: rgba(139, 92, 246, 0.1);
+          color: #8b5cf6;
+        }
+
+        .type-research {
+          background-color: rgba(245, 158, 11, 0.1);
+          color: #f59e0b;
+        }
+
+        .type-medical {
+          background-color: rgba(16, 185, 129, 0.1);
+          color: #10b981;
+        }
+
+        .type-default {
+          background-color: var(--gray-100);
+          color: var(--gray-600);
+        }
+
+        .permissions-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .permission-badge {
+          display: inline-block;
+          padding: 2px var(--spacing-sm);
+          border-radius: var(--radius-sm);
+          font-size: 0.75rem;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+
+        .permission-badge.propose {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #3b82f6;
+        }
+
+        .permission-badge.vote {
+          background-color: rgba(16, 185, 129, 0.1);
+          color: #10b981;
+        }
+
+        .activity-stats {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .stat-item {
+          font-size: 0.875rem;
+          color: var(--gray-900);
+        }
+
+        .stat-item.secondary {
           color: var(--gray-600);
         }
 
@@ -338,7 +463,7 @@ const HospitalManagement = () => {
           border: 1px solid var(--gray-200);
           border-radius: var(--radius-md);
           box-shadow: var(--shadow-lg);
-          min-width: 180px;
+          min-width: 200px;
           z-index: 50;
           opacity: 0;
           visibility: hidden;
@@ -381,7 +506,7 @@ const HospitalManagement = () => {
 
         .summary-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: var(--spacing-lg);
         }
 
@@ -430,7 +555,12 @@ const HospitalManagement = () => {
           }
 
           .summary-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          }
+
+          .permissions-list {
+            flex-direction: row;
+            flex-wrap: wrap;
           }
         }
       `}</style>
@@ -438,5 +568,4 @@ const HospitalManagement = () => {
   );
 };
 
-export default HospitalManagement;
->>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d
+export default OrganizationManagement;
