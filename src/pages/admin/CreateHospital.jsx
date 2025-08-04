@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { Building2, Save, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const CreateHospital = () => {
   const [formData, setFormData] = useState({
@@ -27,22 +18,15 @@ const CreateHospital = () => {
     password: '',
     confirmPassword: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSelectChange = (name, value) => {
-    setFormData({
-      ...formData,
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
   };
 
   const generateHospitalCode = () => {
@@ -54,298 +38,399 @@ const CreateHospital = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
+    setError('');
 
     try {
       // Validation
       if (formData.password !== formData.confirmPassword) {
-        toast({
-          title: "Error",
-          description: "Passwords do not match",
-          variant: "destructive",
-        });
-        return;
+        throw new Error('Passwords do not match');
       }
 
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      toast({
-        title: "Hospital Created",
-        description: `${formData.hospitalName} has been successfully created with code ${formData.hospitalCode}`,
+      alert(`Hospital created successfully: ${formData.hospitalName} (${formData.hospitalCode})`);
+      
+      // Reset form
+      setFormData({
+        hospitalName: '',
+        hospitalCode: '',
+        country: '',
+        state: '',
+        city: '',
+        address: '',
+        contactPersonName: '',
+        contactPersonTitle: '',
+        licenseNumber: '',
+        email: '',
+        phone: '',
+        username: '',
+        password: '',
+        confirmPassword: ''
       });
-
-      // Reset form or navigate
-      navigate('/admin/hospitals');
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create hospital. Please try again.",
-        variant: "destructive",
-      });
+      setError(error.message || 'Failed to create hospital');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm" onClick={() => navigate('/admin/hospitals')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Hospitals
-          </Button>
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">Create New Hospital</h2>
-            <p className="text-muted-foreground">
-              Add a new hospital to the OrganLink platform
-            </p>
+      <div className="create-hospital-page">
+        <div className="container">
+          {/* Header */}
+          <div className="page-header">
+            <h1 className="heading-1">Create Hospital</h1>
+            <p className="text-large">Register a new hospital in the OrganLink system</p>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Hospital Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Building2 className="h-5 w-5" />
-                <span>Hospital Information</span>
-              </CardTitle>
-              <CardDescription>Basic details about the hospital</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="hospitalName">Hospital Name *</Label>
-                  <Input
-                    id="hospitalName"
-                    name="hospitalName"
-                    value={formData.hospitalName}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Apollo Hospital Chennai"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="hospitalCode">Hospital Code *</Label>
-                  <div className="flex space-x-2">
-                    <Input
-                      id="hospitalCode"
-                      name="hospitalCode"
-                      value={formData.hospitalCode}
+          {/* Form Card */}
+          <div className="form-card card">
+            <div className="card-header">
+              <h3 className="heading-3">Hospital Registration Form</h3>
+              <p className="text-normal">Fill out all required information to register a new hospital</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="hospital-form">
+              {/* Location Information */}
+              <div className="form-section">
+                <h4 className="section-title">Location Information</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Country *</label>
+                    <select
+                      name="country"
+                      value={formData.country}
                       onChange={handleInputChange}
-                      placeholder="e.g., CH-001"
+                      className="form-select"
+                      required
+                    >
+                      <option value="">Select Country</option>
+                      <option value="india">India</option>
+                      <option value="usa">United States</option>
+                      <option value="uk">United Kingdom</option>
+                      <option value="canada">Canada</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">State/Province *</label>
+                    <select
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      className="form-select"
+                      required
+                    >
+                      <option value="">Select State</option>
+                      <option value="maharashtra">Maharashtra</option>
+                      <option value="tamil-nadu">Tamil Nadu</option>
+                      <option value="karnataka">Karnataka</option>
+                      <option value="delhi">Delhi</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">City *</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Enter city name"
                       required
                     />
-                    <Button type="button" variant="outline" onClick={generateHospitalCode}>
-                      Generate
-                    </Button>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Hospital Code *</label>
+                    <div className="code-input-group">
+                      <input
+                        type="text"
+                        name="hospitalCode"
+                        value={formData.hospitalCode}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        placeholder="e.g., CH-001"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={generateHospitalCode}
+                        className="btn btn-secondary code-generate-btn"
+                        disabled={!formData.city}
+                      >
+                        Generate
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="licenseNumber">Medical License Number *</Label>
-                <Input
-                  id="licenseNumber"
-                  name="licenseNumber"
-                  value={formData.licenseNumber}
-                  onChange={handleInputChange}
-                  placeholder="e.g., MED123456"
-                  required
-                />
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Location Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location Details</CardTitle>
-              <CardDescription>Hospital address and location information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="country">Country *</Label>
-                  <Select onValueChange={(value) => handleSelectChange('country', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="india">India</SelectItem>
-                      <SelectItem value="usa">United States</SelectItem>
-                      <SelectItem value="uk">United Kingdom</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">State *</Label>
-                  <Select onValueChange={(value) => handleSelectChange('state', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tamil-nadu">Tamil Nadu</SelectItem>
-                      <SelectItem value="maharashtra">Maharashtra</SelectItem>
-                      <SelectItem value="delhi">Delhi</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    value={formData.city}
+              {/* Hospital Information */}
+              <div className="form-section">
+                <h4 className="section-title">Hospital Information</h4>
+                <div className="form-group">
+                  <label className="form-label">Hospital Name *</label>
+                  <input
+                    type="text"
+                    name="hospitalName"
+                    value={formData.hospitalName}
                     onChange={handleInputChange}
-                    placeholder="e.g., Chennai"
+                    className="form-input"
+                    placeholder="Enter full hospital name"
                     required
                   />
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="address">Full Address</Label>
-                <Textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  placeholder="Complete hospital address"
-                  rows={3}
-                />
-              </div>
-            </CardContent>
-          </Card>
+                
+                <div className="form-group">
+                  <label className="form-label">Medical License Number *</label>
+                  <input
+                    type="text"
+                    name="licenseNumber"
+                    value={formData.licenseNumber}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="e.g., MED123456"
+                    required
+                  />
+                </div>
 
-          {/* Contact Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Information</CardTitle>
-              <CardDescription>Primary contact person and communication details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="contactPersonName">Contact Person Name *</Label>
-                  <Input
-                    id="contactPersonName"
-                    name="contactPersonName"
-                    value={formData.contactPersonName}
+                <div className="form-group">
+                  <label className="form-label">Full Address</label>
+                  <textarea
+                    name="address"
+                    value={formData.address}
                     onChange={handleInputChange}
-                    placeholder="e.g., Dr. Raj Kumar"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contactPersonTitle">Title/Designation</Label>
-                  <Input
-                    id="contactPersonTitle"
-                    name="contactPersonTitle"
-                    value={formData.contactPersonTitle}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Chief Medical Officer"
+                    className="form-textarea"
+                    placeholder="Complete hospital address"
+                    rows="3"
                   />
                 </div>
               </div>
-              
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="admin@hospital.com"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="+91 9876543210"
-                    required
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Login Credentials */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Login Credentials</CardTitle>
-              <CardDescription>Set up login credentials for the hospital</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username *</Label>
-                  <Input
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    placeholder="e.g., ch-001"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password *</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="Strong password"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password *</Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Confirm password"
-                  required
-                />
-              </div>
-            </CardContent>
-          </Card>
+              {/* Contact Information */}
+              <div className="form-section">
+                <h4 className="section-title">Contact Information</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Contact Person Name *</label>
+                    <input
+                      type="text"
+                      name="contactPersonName"
+                      value={formData.contactPersonName}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Dr. John Smith"
+                      required
+                    />
+                  </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end space-x-4">
-            <Button type="button" variant="outline" onClick={() => navigate('/admin/hospitals')}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <>Creating...</>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Create Hospital
-                </>
+                  <div className="form-group">
+                    <label className="form-label">Title/Designation</label>
+                    <input
+                      type="text"
+                      name="contactPersonTitle"
+                      value={formData.contactPersonTitle}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Chief Medical Officer"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Email Address *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="admin@hospital.com"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Contact Number *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="+91 9876543210"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Login Credentials */}
+              <div className="form-section">
+                <h4 className="section-title">Login Credentials</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Username *</label>
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Hospital login username"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Password *</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Secure password"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group form-group-full">
+                    <label className="form-label">Confirm Password *</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Confirm password"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Error Display */}
+              {error && (
+                <div className="error-message" style={{
+                  color: '#dc2626',
+                  backgroundColor: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  marginBottom: '16px',
+                  fontSize: '14px'
+                }}>
+                  {error}
+                </div>
               )}
-            </Button>
+
+              {/* Form Actions */}
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                  {loading ? 'Creating Hospital...' : 'Create Hospital'}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
+
+      <style jsx>{`
+        .create-hospital-page {
+          min-height: calc(100vh - 200px);
+          padding: var(--spacing-xl) 0;
+        }
+
+        .page-header {
+          margin-bottom: var(--spacing-2xl);
+          text-align: center;
+        }
+
+        .form-card {
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .hospital-form {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-2xl);
+        }
+
+        .form-section {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-lg);
+        }
+
+        .section-title {
+          font-family: var(--font-heading);
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: var(--gray-800);
+          margin: 0;
+          padding-bottom: var(--spacing-sm);
+          border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: var(--spacing-lg);
+        }
+
+        .form-group-full {
+          grid-column: 1 / -1;
+        }
+
+        .code-input-group {
+          display: flex;
+          gap: var(--spacing-sm);
+        }
+
+        .code-input-group .form-input {
+          flex: 1;
+        }
+
+        .code-generate-btn {
+          white-space: nowrap;
+          min-width: 100px;
+        }
+
+        .form-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: var(--spacing-md);
+          padding-top: var(--spacing-xl);
+          border-top: 1px solid var(--gray-200);
+        }
+
+        @media (max-width: 768px) {
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .form-actions {
+            flex-direction: column;
+          }
+          
+          .form-actions .btn {
+            width: 100%;
+          }
+
+          .code-input-group {
+            flex-direction: column;
+          }
+        }
+      `}</style>
     </AdminLayout>
   );
 };
