@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-export default function AdminDashboard() {
-  return <div>Admin Dashboard Placeholder</div>;
-}
-=======
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/AdminLayout';
+import AdminLayout from '../../components/AdminLayout';
 import medicalDashboard from '../../assets/medical-dashboard.jpg';
 
 const AdminDashboard = () => {
@@ -24,21 +19,32 @@ const AdminDashboard = () => {
     { id: 4, type: 'vote', message: 'New proposal for liver allocation received 5 votes', time: '8 hours ago', status: 'pending' }
   ]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'success': return 'bg-green-500/10 text-green-700 border-green-500/20';
-      case 'info': return 'bg-blue-500/10 text-blue-700 border-blue-500/20';
-      case 'pending': return 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
-
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'success': return <CheckCircle className="h-4 w-4" />;
-      case 'info': return <Activity className="h-4 w-4" />;
-      case 'pending': return <Clock className="h-4 w-4" />;
-      default: return <AlertCircle className="h-4 w-4" />;
+      case 'success': return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+          <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="2"/>
+        </svg>
+      );
+      case 'info': return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="currentColor" strokeWidth="2"/>
+        </svg>
+      );
+      case 'pending': return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+          <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
+        </svg>
+      );
+      default: return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+          <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2"/>
+          <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" strokeWidth="2"/>
+        </svg>
+      );
     }
   };
 
@@ -499,4 +505,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
->>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d

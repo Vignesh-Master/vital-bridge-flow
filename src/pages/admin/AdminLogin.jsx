@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-export default function AdminLogin() {
-  return <div>Admin Login Placeholder</div>;
-}
-=======
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginImage from '../../assets/login-split-image.jpg';
@@ -381,4 +376,3 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
->>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d

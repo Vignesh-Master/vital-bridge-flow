@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-export default function HospitalManagement() {
-  return <div>Hospital Management Placeholder</div>;
-}
-=======
 import React, { useState } from 'react';
-import AdminLayout from '@/components/AdminLayout';
+import AdminLayout from '../../components/AdminLayout';
 
 const HospitalManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -439,4 +434,3 @@ const HospitalManagement = () => {
 };
 
 export default HospitalManagement;
->>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d
