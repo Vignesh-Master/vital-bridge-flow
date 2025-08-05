@@ -251,74 +251,64 @@ const PublicHome = () => {
             <h2 className="heading-2">Revolutionary Features</h2>
             <p className="text-large">Cutting-edge technology for life-saving solutions</p>
           </div>
-          <div className="features-box">
-            <div className="features-grid-3x2">
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L13.09 6.26L18 7L13.09 7.74L12 12L10.91 7.74L6 7L10.91 6.26L12 2Z" fill="var(--primary-blue)"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">AI-based Matching</h3>
-                <p className="feature-description">Advanced machine learning algorithms analyze compatibility factors, medical history, and urgency levels for optimal donor-patient matching.</p>
+          <div className="features-grid-3x2">
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                </svg>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">Blockchain Security</h3>
-                <p className="feature-description">Immutable records on Ethereum blockchain ensure data integrity, transparency, and fraud prevention in organ donation processes.</p>
+              <h3 className="feature-title">AI-based Matching</h3>
+              <p className="feature-description">Advanced machine learning algorithms analyze compatibility factors, medical history, and urgency levels for optimal donor-patient matching.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 1l3 6 6 .75-4.12 4.62L18 19l-6-3-6 3 1.13-6.63L3 7.75 9 7z" fill="var(--primary-blue)"/>
+                </svg>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="3" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">IPFS Document Storage</h3>
-                <p className="feature-description">Medical documents are securely stored and shared using decentralized IPFS technology.</p>
+              <h3 className="feature-title">Blockchain Security</h3>
+              <p className="feature-description">Immutable records on Ethereum blockchain ensure data integrity, transparency, and fraud prevention in organ donation processes.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                </svg>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">Compliance & Transparency</h3>
-                <p className="feature-description">Automated policy checks and transparent audit trails for regulatory compliance.</p>
+              <h3 className="feature-title">IPFS Document Storage</h3>
+              <p className="feature-description">Medical documents are securely stored and shared using decentralized IPFS technology.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                </svg>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <rect x="4" y="4" width="16" height="16" rx="4" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">Real-time Notifications</h3>
-                <p className="feature-description">Instant alerts for organ matches, policy updates, and critical events for all stakeholders.</p>
+              <h3 className="feature-title">Compliance & Transparency</h3>
+              <p className="feature-description">Automated policy checks and transparent audit trails for regulatory compliance.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 17h5l-5-5 5-5h-5m-6 10v4H4l5-5-5-5h5v4h6v6h-6z" fill="var(--primary-blue)"/>
+                </svg>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2v20M2 12h20" stroke="var(--primary-blue)" strokeWidth="2"/>
-                  </svg>
-                </div>
-                <h3 className="feature-title">Global Collaboration</h3>
-                <p className="feature-description">Connects hospitals, organizations, and authorities worldwide for a unified donation ecosystem.</p>
+              <h3 className="feature-title">Real-time Notifications</h3>
+              <p className="feature-description">Instant alerts for organ matches, policy updates, and critical events for all stakeholders.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke="var(--primary-blue)" strokeWidth="2" fill="none"/>
+                </svg>
               </div>
+              <h3 className="feature-title">Global Collaboration</h3>
+              <p className="feature-description">Connects hospitals, organizations, and authorities worldwide for a unified donation ecosystem.</p>
             </div>
           </div>
         </div>
         <style>{`
-          .features-box {
-            background: #fff;
-            border-radius: 1.5rem;
-            box-shadow: 0 8px 32px rgba(43,90,161,0.10);
-            padding: 2.5rem 2rem 2.2rem 2rem;
-            margin: 0 auto;
-            max-width: 1100px;
-          }
           .features-grid-3x2 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);

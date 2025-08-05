@@ -15,13 +15,53 @@ const AdminLayout = ({ children }) => {
   };
 
   const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
-    { name: 'Create Hospital', href: '/admin/create-hospital', icon: '🏥' },
-    { name: 'Create Organization', href: '/admin/create-org', icon: '🏢' },
-    { name: 'View Hospitals', href: '/admin/hospitals', icon: '📋' },
-    { name: 'View Organizations', href: '/admin/organizations', icon: '🌐' },
-    { name: 'Reset Password', href: '/admin/reset-password', icon: '🔑' },
-    { name: 'Statistics', href: '/admin/statistics', icon: '📈' },
+    { name: 'Dashboard', href: '/admin/dashboard', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+        <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+        <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+        <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'Create Hospital', href: '/admin/create-hospital', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7 7-7z" stroke="currentColor" strokeWidth="2"/>
+        <path d="M12 5L8 21l4-7 4 7-4-16" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'Create Organization', href: '/admin/create-org', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
+        <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'View Hospitals', href: '/admin/hospitals', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4m0-11V9a2 2 0 1 1 4 0v2m0 0h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4m-8-9h8" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'View Organizations', href: '/admin/organizations', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+        <path d="M2 12h20" stroke="currentColor" strokeWidth="2"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'Reset Password', href: '/admin/reset-password', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="11" width="18" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
+        <circle cx="12" cy="16" r="1" stroke="currentColor" strokeWidth="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'Statistics', href: '/admin/statistics', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" strokeWidth="2"/>
+        <line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" strokeWidth="2"/>
+        <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
   ];
 
   const isCurrentPage = (href) => location.pathname === href;
@@ -61,7 +101,7 @@ const AdminLayout = ({ children }) => {
               onClick={() => setSidebarOpen(false)}
             >
               <span className="nav-icon">{item.icon}</span>
-              {item.name}
+              <span className="nav-text">{item.name}</span>
             </Link>
           ))}
         </nav>
@@ -142,13 +182,14 @@ const AdminLayout = ({ children }) => {
           left: 0;
           height: 100vh;
           width: 280px;
-          background-color: var(--white);
-          box-shadow: var(--shadow-lg);
+          background: linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%);
+          box-shadow: var(--shadow-xl);
           z-index: 50;
           transform: translateX(-100%);
           transition: transform var(--transition-normal);
           display: flex;
           flex-direction: column;
+          border-right: 1px solid var(--gray-200);
         }
 
         .sidebar-open {
@@ -176,7 +217,7 @@ const AdminLayout = ({ children }) => {
 
         .sidebar-nav {
           flex: 1;
-          padding: var(--spacing-lg);
+          padding: var(--spacing-lg) var(--spacing-md);
           display: flex;
           flex-direction: column;
           gap: var(--spacing-xs);
@@ -186,27 +227,46 @@ const AdminLayout = ({ children }) => {
           display: flex;
           align-items: center;
           gap: var(--spacing-md);
-          padding: var(--spacing-md);
+          padding: var(--spacing-md) var(--spacing-lg);
           color: var(--gray-700);
           text-decoration: none;
-          border-radius: var(--radius-md);
+          border-radius: var(--radius-lg);
           font-weight: 500;
           transition: all var(--transition-normal);
+          margin-bottom: var(--spacing-xs);
+          border: 1px solid transparent;
         }
 
         .nav-link:hover {
-          background-color: var(--gray-50);
+          background-color: rgba(44, 90, 160, 0.05);
           color: var(--primary-blue);
+          border-color: rgba(44, 90, 160, 0.1);
+          transform: translateX(4px);
         }
 
         .nav-link-active {
-          background-color: rgba(44, 90, 160, 0.1);
-          color: var(--primary-blue);
-          border-left: 4px solid var(--primary-blue);
+          background: var(--gradient-primary);
+          color: var(--white);
+          border-color: var(--primary-blue);
+          box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        }
+
+        .nav-link-active:hover {
+          color: var(--white);
+          transform: translateX(0);
         }
 
         .nav-icon {
-          font-size: 1.2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+        }
+
+        .nav-text {
+          font-size: 0.95rem;
+          font-weight: 500;
         }
 
         .sidebar-footer {

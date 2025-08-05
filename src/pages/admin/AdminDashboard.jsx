@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 import medicalDashboard from '../../assets/medical-dashboard.jpg';
 
@@ -192,21 +193,21 @@ const AdminDashboard = () => {
                 <h3 className="heading-3">Quick Actions</h3>
               </div>
               <div className="quick-actions">
-                <button className="action-btn">
+                <Link to="/admin/create-hospital" className="action-btn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M3 21h18V9l-9-7-9 7v12z" stroke="currentColor" strokeWidth="2"/>
                     <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                   Create Hospital
-                </button>
-                <button className="action-btn">
+                </Link>
+                <Link to="/admin/create-org" className="action-btn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
                     <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                   Create Organization
-                </button>
-                <button className="action-btn">
+                </Link>
+                <Link to="/admin/reset-password" className="action-btn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
                     <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2"/>
@@ -214,15 +215,15 @@ const AdminDashboard = () => {
                     <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                   Reset Password
-                </button>
-                <button className="action-btn">
+                </Link>
+                <Link to="/admin/statistics" className="action-btn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" strokeWidth="2"/>
                     <line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" strokeWidth="2"/>
                     <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                   View Statistics
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -473,12 +474,14 @@ const AdminDashboard = () => {
           font-weight: 500;
           cursor: pointer;
           transition: all var(--transition-normal);
+          text-decoration: none;
         }
 
         .action-btn:hover {
           border-color: var(--primary-blue);
           color: var(--primary-blue);
           transform: translateY(-1px);
+          text-decoration: none;
         }
 
         @media (max-width: 768px) {

@@ -125,25 +125,48 @@ const Login = () => {
         throw new Error('Please enter both User ID and Password');
       }
 
-      // Prepare login credentials
-      const credentials = {
-        userId: formData.userId,
-        password: formData.password
+      // Demo credentials for hospital login
+      const demoCredentials = {
+        'ch-001': { password: 'password123', hospital: 'Apollo Hospital Chennai', tenantId: 'apollo-chennai' },
+        'mb-001': { password: 'password123', hospital: 'Apollo Hospital Mumbai', tenantId: 'apollo-mumbai' }
       };
 
-      // Call login API
-      const response = await authAPI.login(credentials);
-
-      if (response.success) {
-        // Store authentication data
-        localStorage.setItem('hospital_token', response.data.token);
-        localStorage.setItem('hospital_tenant_id', response.data.tenantId);
-        localStorage.setItem('hospital_info', JSON.stringify(response.data.hospital));
+      // Check demo credentials
+      const demoUser = demoCredentials[formData.userId];
+      if (demoUser && demoUser.password === formData.password) {
+        // Store authentication data for demo
+        localStorage.setItem('hospital_token', 'demo-hospital-token-' + formData.userId);
+        localStorage.setItem('hospital_tenant_id', demoUser.tenantId);
+        localStorage.setItem('hospital_info', JSON.stringify({
+          name: demoUser.hospital,
+          userId: formData.userId
+        }));
 
         // Navigate to dashboard
-        navigate('/dashboard');
-      } else {
-        throw new Error(response.message || 'Login failed');
+        navigate('/hospital/dashboard');
+        return;
+      }
+
+      // If not demo credentials, try API call
+      try {
+        const credentials = {
+          userId: formData.userId,
+          password: formData.password
+        };
+
+        const response = await authAPI.login(credentials);
+
+        if (response.success) {
+          localStorage.setItem('hospital_token', response.data.token);
+          localStorage.setItem('hospital_tenant_id', response.data.tenantId);
+          localStorage.setItem('hospital_info', JSON.stringify(response.data.hospital));
+          navigate('/hospital/dashboard');
+        } else {
+          throw new Error(response.message || 'Login failed');
+        }
+      } catch (apiError) {
+        // If API fails, show demo credential hint
+        throw new Error('Network error. Please use demo credentials: ch-001/password123 or mb-001/password123');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -265,7 +288,7 @@ const Login = () => {
                       required
                     />
                     <small className="form-help">
-                      Chennai Hospital: ch-001 | Mumbai Hospital: mb-001
+                      Demo: ch-001/password123 or mb-001/password123
                     </small>
                   </div>
 
@@ -279,7 +302,7 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         className="form-input password-input"
-                        placeholder="Enter your password"
+                        placeholder="Demo password: password123"
                         required
                       />
                       <button
