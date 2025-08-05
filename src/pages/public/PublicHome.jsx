@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa';
-import TestimonialCarousel from '../components/TestimonialCarousel';
-import AnimatedStat from '../components/AnimatedStat';
-import '../components/TestimonialCarousel.css';
+import TestimonialCarousel from '../../components/TestimonialCarousel';
+import AnimatedStat from '../../components/AnimatedStat';
+import '../../components/TestimonialCarousel.css';
 
 const PublicHome = () => {
   const homeRef = useRef(null);
