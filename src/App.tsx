@@ -3,9 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
 // Public Pages
 import PublicHome from './pages/public/PublicHome.jsx';
-import FAQs from './pages/public/FAQs.jsx';
+import PublicFAQs from './pages/public/FAQs.jsx';
 import NotFound from './pages/public/NotFound.tsx';
 import Index from './pages/public/Index.tsx';
 
@@ -17,7 +19,8 @@ import RegisterDonor from './pages/hospital/RegisterDonor.jsx';
 import RegisterPatient from './pages/hospital/RegisterPatient.jsx';
 import DonorStatus from './pages/hospital/DonorStatus.jsx';
 import PatientStatus from './pages/hospital/PatientStatus.jsx';
-import MatchingDashboard from './pages/MatchingDashboard.jsx';
+import MatchingDashboard from './pages/hospital/MatchingDashboard.jsx';
+import HospitalFAQs from './pages/hospital/FAQs.jsx';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin.jsx';
@@ -52,7 +55,7 @@ const App = () => (
         <Routes>
           {/* Public Site */}
           <Route path="/" element={<PublicHome />} />
-          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/faqs" element={<PublicFAQs />} />
           <Route path="/index" element={<Index />} />
           <Route path="*" element={<NotFound />} />
 
@@ -66,7 +69,7 @@ const App = () => (
           <Route path="/hospital/donor-status" element={<ProtectedRoute><DonorStatus /></ProtectedRoute>} />
           <Route path="/hospital/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
           <Route path="/hospital/match-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
-          <Route path="/hospital/faq" element={<FAQs />} />
+          <Route path="/hospital/faq" element={<HospitalFAQs />} />
 
           {/* Legacy Routes (for backward compatibility) */}
           {/* Optionally, you can remove these if not needed */}
@@ -78,7 +81,7 @@ const App = () => (
           <Route path="/donor-status" element={<ProtectedRoute><DonorStatus /></ProtectedRoute>} />
           <Route path="/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
           <Route path="/matching-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
-          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/faqs" element={<PublicFAQs />} />
 
           {/* Admin Module */}
           <Route path="/admin/login" element={<AdminLogin />} />

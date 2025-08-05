@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../components/Layout';
-import { aiMatchingAPI, apiUtils } from '../services/api';
+import Layout from '../../components/Layout';
+import { aiMatchingAPI, apiUtils } from '../../services/api';
 
 const MatchingDashboard = () => {
   const navigate = useNavigate();
