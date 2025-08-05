@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Layout from '../components/Layout';
-import { patientAPI, signatureAPI } from '../services/api';
+import Layout from '../../components/Layout';
+import { patientAPI, signatureAPI } from '../../services/api';
 
 const RegisterPatient = () => {
   const [formData, setFormData] = useState({

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../components/Layout';
-import { donorAPI, patientAPI, apiUtils } from '../services/api';
-import hospitalExterior from '../assets/hospital-exterior.jpg';
-import medicalDashboard from '../assets/medical-dashboard.jpg';
+import Layout from '../../components/Layout';
+import { donorAPI, patientAPI, apiUtils } from '../../services/api';
+import hospitalExterior from '../../assets/hospital-exterior.jpg';
+import medicalDashboard from '../../assets/medical-dashboard.jpg';
 
 const Dashboard = () => {
   const navigate = useNavigate();

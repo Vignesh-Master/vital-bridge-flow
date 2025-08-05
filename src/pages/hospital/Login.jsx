@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authAPI, locationAPI, hospitalAPI } from '../services/api';
-import loginImage from '../assets/login-split-image.jpg';
+import { authAPI, locationAPI, hospitalAPI } from '../../services/api';
+import loginImage from '../../assets/login-split-image.jpg';
 
 const Login = () => {
   const navigate = useNavigate();
