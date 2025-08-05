@@ -1,46 +1,45 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login.jsx";
-import ForgotPassword from "./pages/ForgotPassword.jsx";
-import HospitalForgotPassword from "./pages/hospital/HospitalForgotPassword.jsx";
+// Public Pages
+import PublicHome from './pages/public/PublicHome.jsx';
+import FAQs from './pages/public/FAQs.jsx';
+import NotFound from './pages/public/NotFound.tsx';
+import Index from './pages/public/Index.tsx';
 
-import Index from "./pages/public/Index";
-import NotFound from "./pages/public/NotFound";
-import FAQs from "./pages/public/FAQs.jsx";
-import PublicHome from "./pages/PublicHome.jsx";
-import OrgLogin from "./pages/org/OrgLogin.jsx";
-import OrgPolicies from "./pages/org/OrgPolicies.jsx";
-import OrgForgotPassword from "./pages/org/OrgForgotPassword.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import RegisterDonor from "./pages/RegisterDonor.jsx";
-import RegisterPatient from "./pages/RegisterPatient.jsx";
-import DonorStatus from "./pages/DonorStatus.jsx";
-import PatientStatus from "./pages/PatientStatus.jsx";
-import MatchingDashboard from "./pages/MatchingDashboard.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import AdminLogin from "./pages/admin/AdminLogin.jsx";
-import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import HospitalManagement from "./pages/admin/HospitalManagement.jsx";
-<<<<<<< HEAD
-=======
-import CreateHospital from "./pages/admin/CreateHospital.jsx";
-import CreateOrganization from "./pages/admin/CreateOrganization.jsx";
-import OrganizationManagement from "./pages/admin/OrganizationManagement.jsx";
-import Statistics from "./pages/admin/Statistics.jsx";
-import ResetPassword from "./pages/admin/ResetPassword.jsx";
+// Hospital Pages
+import Login from './pages/hospital/Login.jsx';
+import HospitalForgotPassword from './pages/hospital/HospitalForgotPassword.jsx';
+import Dashboard from './pages/hospital/Dashboard.jsx';
+import RegisterDonor from './pages/hospital/RegisterDonor.jsx';
+import RegisterPatient from './pages/hospital/RegisterPatient.jsx';
+import DonorStatus from './pages/hospital/DonorStatus.jsx';
+import PatientStatus from './pages/hospital/PatientStatus.jsx';
+import MatchingDashboard from './pages/MatchingDashboard.jsx';
+
+// Admin Pages
+import AdminLogin from './pages/admin/AdminLogin.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import HospitalManagement from './pages/admin/HospitalManagement.jsx';
+import CreateHospital from './pages/admin/CreateHospital.jsx';
+import CreateOrganization from './pages/admin/CreateOrganization.jsx';
+import OrganizationManagement from './pages/admin/OrganizationManagement.jsx';
+import Statistics from './pages/admin/Statistics.jsx';
+import ResetPassword from './pages/admin/ResetPassword.jsx';
 
 // Organization Pages
-import OrgLogin from "./pages/org/OrgLogin.jsx";
-import OrgPolicies from "./pages/org/OrgPolicies.jsx";
->>>>>>> 0e15532b5b16b17ef53afe25efc32be2ef97388d
-import ProposePolicy from "./pages/org/ProposePolicy.jsx";
-import VotePolicy from "./pages/org/VotePolicy.jsx";
-import Unauthorized from "./pages/Unauthorized.jsx";
-import SessionExpired from "./pages/SessionExpired.jsx";
+import OrgLogin from './pages/org/OrgLogin.jsx';
+import OrgPolicies from './pages/org/OrgPolicies.jsx';
+import OrgForgotPassword from './pages/org/OrgForgotPassword.jsx';
+import ProposePolicy from './pages/org/ProposePolicy.jsx';
+import VotePolicy from './pages/org/VotePolicy.jsx';
+
+// Utility Pages
+import Unauthorized from './pages/utility/Unauthorized.jsx';
+import SessionExpired from './pages/utility/SessionExpired.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
 
 const queryClient = new QueryClient();
 
@@ -53,7 +52,11 @@ const App = () => (
         <Routes>
           {/* Public Site */}
           <Route path="/" element={<PublicHome />} />
-          
+          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/index" element={<Index />} />
+          <Route path="*" element={<NotFound />} />
+
+
           {/* Hospital Module */}
           <Route path="/hospital/login" element={<Login />} />
           <Route path="/hospital/forgot-password" element={<HospitalForgotPassword />} />
@@ -64,8 +67,9 @@ const App = () => (
           <Route path="/hospital/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
           <Route path="/hospital/match-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
           <Route path="/hospital/faq" element={<FAQs />} />
-          
+
           {/* Legacy Routes (for backward compatibility) */}
+          {/* Optionally, you can remove these if not needed */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -97,12 +101,6 @@ const App = () => (
           {/* Utility Pages */}
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/session-expired" element={<SessionExpired />} />
-
-          {/* Legacy Index (redirect to public home) */}
-          <Route path="/index" element={<PublicHome />} />
-
-          {/* 404 Page */}
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
