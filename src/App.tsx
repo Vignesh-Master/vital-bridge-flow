@@ -9,7 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicHome from './pages/public/PublicHome.jsx';
 import PublicFAQs from './pages/public/FAQs.jsx';
 import NotFound from './pages/public/NotFound.tsx';
-import Index from './pages/public/Index.tsx';
+import Index from './pages/Index.tsx';
 
 // Hospital Pages
 import Login from './pages/hospital/Login.jsx';
