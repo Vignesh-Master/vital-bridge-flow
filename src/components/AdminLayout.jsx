@@ -338,6 +338,7 @@ const AdminLayout = ({ children }) => {
         }
       `}</style>
     </div>
+  );
 };
 
 export default AdminLayout;
