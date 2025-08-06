@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { countries } from '@/lib/locationData';
 import AdminLayout from '@/components/AdminLayout';
 
 const CreateOrganization = () => {
@@ -7,6 +8,8 @@ const CreateOrganization = () => {
     organizationCode: '',
     organizationType: '',
     description: '',
+    country: '',
+    state: '',
     contactPersonName: '',
     contactPersonTitle: '',
     email: '',
@@ -26,7 +29,8 @@ const CreateOrganization = () => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
+      ...(name === 'country' ? { state: '' } : {})
     }));
   };
 
@@ -156,6 +160,37 @@ const CreateOrganization = () => {
                       <option value="medical">Medical Association</option>
                       <option value="advocacy">Advocacy Group</option>
                       <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Country *</label>
+                    <select
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      className="form-select"
+                      required
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map(c => (
+                        <option key={c.code} value={c.code}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">State/Province *</label>
+                    <select
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      className="form-select"
+                      required
+                      disabled={!formData.country}
+                    >
+                      <option value="">Select State</option>
+                      {countries.find(c => c.code === formData.country)?.states.map(s => (
+                        <option key={s.code} value={s.code}>{s.name}</option>
+                      ))}
                     </select>
                   </div>
 

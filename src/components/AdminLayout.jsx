@@ -4,7 +4,20 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+
+  // Responsive sidebar toggle
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
 
@@ -29,7 +42,7 @@ const AdminLayout = ({ children }) => {
         <path d="M12 5L8 21l4-7 4 7-4-16" stroke="currentColor" strokeWidth="2"/>
       </svg>
     )},
-    { name: 'Create Organization', href: '/admin/create-org', icon: (
+    { name: 'Create Organization', href: '/admin/create-organization', icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
         <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
@@ -46,6 +59,11 @@ const AdminLayout = ({ children }) => {
         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
         <path d="M2 12h20" stroke="currentColor" strokeWidth="2"/>
         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    )},
+    { name: 'View Locations', href: '/admin/locations', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" stroke="currentColor" strokeWidth="2"/>
       </svg>
     )},
     { name: 'Reset Password', href: '/admin/reset-password', icon: (
@@ -69,12 +87,14 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="admin-layout">
       {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
+
+      {/* Overlay for mobile */}
+      {sidebarOpen && window.innerWidth <= 1024 && (
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
       )}
 
       {/* Sidebar */}
-      <div className={`admin-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      <div className={`admin-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}> 
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
@@ -129,32 +149,31 @@ const AdminLayout = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="admin-main">
+      <div className={`admin-main${sidebarOpen ? '' : ' main-expanded'}`}>
         {/* Top bar */}
         <div className="admin-header">
-          <button onClick={() => setSidebarOpen(true)} className="mobile-menu-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 6h16M4 12h16M4 18h16" />
+          <button onClick={() => setSidebarOpen((open) => !open)} className="sidebar-toggle-btn" aria-label="Toggle sidebar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+              <path d="M9 3v18" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </button>
-
           <div className="header-actions">
-            <button className="header-action-btn">
+            <button className="header-action-btn" title="Notifications">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="m13.73 21a2 2 0 0 1-3.46 0"/>
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11c0-3.07-1.64-5.64-5-6.32V4a2 2 0 1 0-4 0v.68C5.64 5.36 4 7.929 4 11v3.159c0 .538-.214 1.055-.595 1.436L2 17h5m5 0v1a3 3 0 0 1-6 0v-1m6 0H9"/>
               </svg>
               <span className="notification-badge"></span>
             </button>
-            <button className="header-action-btn">
+            <button className="header-action-btn" title="User Alerts">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="m12 1 1.09 3.26L16 5.64l-1.64 2.73L16 12l-2.73 1.64L16 16l-1.64 1.64L12 18.36l-1.09 3.26L8 20l-1.64-2.73L4 16l1.64-1.64L4 12l2.73-1.64L4 8l1.64-1.64L8 4l1.09-3.26"/>
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v4"/>
+                <circle cx="12" cy="16" r="1"/>
               </svg>
             </button>
           </div>
         </div>
-
         {/* Page content */}
         <main className="admin-content">
           {children}
@@ -314,6 +333,11 @@ const AdminLayout = ({ children }) => {
           margin-left: 280px;
           display: flex;
           flex-direction: column;
+          transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .main-expanded {
+          margin-left: 80px;
         }
 
         .admin-header {
@@ -379,20 +403,49 @@ const AdminLayout = ({ children }) => {
           padding: var(--spacing-xl);
         }
 
+        .sidebar-toggle-btn {
+          display: none;
+          background: none;
+          border: none;
+          color: var(--primary-blue);
+          cursor: pointer;
+          margin-right: var(--spacing-md);
+          padding: var(--spacing-xs);
+          border-radius: var(--radius-md);
+          transition: background 0.2s;
+        }
+        .sidebar-toggle-btn:hover {
+          background: var(--gray-100);
+        }
+
+        @media (max-width: 1280px) {
+          .admin-main {
+            margin-left: 80px;
+          }
+          .admin-sidebar {
+            width: 80px;
+            min-width: 80px;
+          }
+          .sidebar-logo-text, .nav-text {
+            display: none;
+          }
+        }
+
         @media (max-width: 1024px) {
           .admin-sidebar {
             transform: translateX(-100%);
+            width: 280px;
           }
-
+          .sidebar-open {
+            transform: translateX(0);
+          }
           .sidebar-overlay {
             display: block;
           }
-
           .admin-main {
             margin-left: 0;
           }
-
-          .mobile-menu-btn {
+          .sidebar-toggle-btn {
             display: block;
           }
         }

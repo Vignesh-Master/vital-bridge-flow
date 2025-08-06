@@ -5,7 +5,7 @@ import loginImage from '../../assets/login-split-image.jpg';
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    username: 'admin',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +14,7 @@ const AdminLogin = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'username') return; // username is readonly
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -88,9 +89,8 @@ const AdminLogin = () => {
                       type="text"
                       name="username"
                       value={formData.username}
-                      onChange={handleInputChange}
                       className="form-input"
-                      placeholder="Enter admin username"
+                      readOnly
                       required
                     />
                   </div>

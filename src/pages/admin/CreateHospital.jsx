@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { countries } from '@/lib/locationData';
 import AdminLayout from '@/components/AdminLayout';
 
 const CreateHospital = () => {
@@ -25,7 +26,8 @@ const CreateHospital = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
+      ...(name === 'country' ? { state: '' } : {})
     }));
   };
 
@@ -108,10 +110,9 @@ const CreateHospital = () => {
                       required
                     >
                       <option value="">Select Country</option>
-                      <option value="india">India</option>
-                      <option value="usa">United States</option>
-                      <option value="uk">United Kingdom</option>
-                      <option value="canada">Canada</option>
+                      {countries.map(c => (
+                        <option key={c.code} value={c.code}>{c.name}</option>
+                      ))}
                     </select>
                   </div>
 
@@ -123,12 +124,12 @@ const CreateHospital = () => {
                       onChange={handleInputChange}
                       className="form-select"
                       required
+                      disabled={!formData.country}
                     >
                       <option value="">Select State</option>
-                      <option value="maharashtra">Maharashtra</option>
-                      <option value="tamil-nadu">Tamil Nadu</option>
-                      <option value="karnataka">Karnataka</option>
-                      <option value="delhi">Delhi</option>
+                      {countries.find(c => c.code === formData.country)?.states.map(s => (
+                        <option key={s.code} value={s.code}>{s.name}</option>
+                      ))}
                     </select>
                   </div>
 

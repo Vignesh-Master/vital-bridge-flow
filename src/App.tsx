@@ -30,6 +30,7 @@ import CreateHospital from './pages/admin/CreateHospital.jsx';
 import CreateOrganization from './pages/admin/CreateOrganization.jsx';
 import OrganizationManagement from './pages/admin/OrganizationManagement.jsx';
 import Statistics from './pages/admin/Statistics.jsx';
+import ViewLocations from './pages/admin/ViewLocations.jsx';
 import ResetPassword from './pages/admin/ResetPassword.jsx';
 
 // Organization Pages
@@ -87,10 +88,11 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/create-hospital" element={<CreateHospital />} />
-          <Route path="/admin/create-org" element={<CreateOrganization />} />
+          <Route path="/admin/create-organization" element={<CreateOrganization />} />
           <Route path="/admin/hospitals" element={<HospitalManagement />} />
           <Route path="/admin/organizations" element={<OrganizationManagement />} />
           <Route path="/admin/statistics" element={<Statistics />} />
+          <Route path="/admin/locations" element={<ViewLocations />} />
           <Route path="/admin/reset-password" element={<ResetPassword />} />
 
           {/* Organization Module */}

@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
+import { countries } from '@/lib/locationData';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from '@/components/AdminLayout';
+import OrganizationForm from './OrganizationForm';
+import ResetOrganizationPasswordForm from './ResetOrganizationPasswordForm';
 
 const OrganizationManagement = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [organizations] = useState([
+  const [countryFilter, setCountryFilter] = useState('');
+  const [stateFilter, setStateFilter] = useState('');
+  const [organizations, setOrganizations] = useState([
     {
       id: 1,
       name: 'Heart Foundation India',
       code: 'NGO-001',
       type: 'NGO',
+      country: 'IN',
+      state: 'TN',
       contactPerson: 'Dr. Sarah Johnson',
       email: 'contact@heartfoundation.org',
       phone: '+91 9876543210',
@@ -24,6 +34,8 @@ const OrganizationManagement = () => {
       name: 'Ministry of Health',
       code: 'GOV-001',
       type: 'Government',
+      country: 'IN',
+      state: 'DL',
       contactPerson: 'Mr. Rajesh Kumar',
       email: 'health@gov.in',
       phone: '+91 9876543211',
@@ -39,6 +51,8 @@ const OrganizationManagement = () => {
       name: 'Medical Research Institute',
       code: 'RES-001',
       type: 'Research',
+      country: 'US',
+      state: 'CA',
       contactPerson: 'Dr. Priya Sharma',
       email: 'research@mri.edu',
       phone: '+91 9876543212',
@@ -51,11 +65,40 @@ const OrganizationManagement = () => {
     }
   ]);
 
-  const filteredOrganizations = organizations.filter(org =>
-    org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    org.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    org.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Modal state
+  const [modal, setModal] = useState({ open: false, mode: '', org: null });
+  const [resetModal, setResetModal] = useState({ open: false, org: null });
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState('');
+
+  const filteredOrganizations = organizations.filter(org => {
+    const matchesSearch =
+      org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      org.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      org.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCountry = !countryFilter || org.country === countryFilter;
+    const matchesState = !stateFilter || org.state === stateFilter;
+    return matchesSearch && matchesCountry && matchesState;
+  });
+
+  const [exportModal, setExportModal] = useState(false);
+  const handleExport = (type) => {
+    if (type === 'excel') {
+      const header = ['Name','Code','Type','Country','State','Contact','Email','Phone'];
+      const rows = filteredOrganizations.map(o => [o.name,o.code,o.type,o.country||'',o.state||'',o.contactPerson,o.email,o.phone]);
+      const csv = [header, ...rows].map(r => r.map(x => `"${x||''}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'organizations.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (type === 'pdf') {
+      window.print(); // Placeholder for PDF export
+    }
+    setExportModal(false);
+  };
 
   const getStatusBadge = (status) => {
     return status === 'active' 
@@ -78,6 +121,45 @@ const OrganizationManagement = () => {
     );
   };
 
+  // Dummy unique check (simulate API)
+  const checkUnique = async (field, value) => {
+    // Simulate uniqueness check
+    await new Promise(r => setTimeout(r, 200));
+    if (field === 'orgId') return !organizations.some(o => o.orgId === value);
+    if (field === 'name') return !organizations.some(o => o.name === value);
+    if (field === 'username') return !organizations.some(o => o.username === value);
+    return true;
+  };
+
+  // Modal handlers
+  const openAddModal = () => navigate('/admin/create-organization');
+  const openEditModal = (org) => setModal({ open: true, mode: 'update', org });
+  const closeModal = () => { setModal({ open: false, mode: '', org: null }); setFormError(''); };
+  const openResetModal = (org) => setResetModal({ open: true, org });
+  const closeResetModal = () => setResetModal({ open: false, org: null });
+
+  // Form submit handlers
+  const handleOrgSubmit = async (data) => {
+    setFormLoading(true); setFormError('');
+    try {
+      if (modal.mode === 'create') {
+        setOrganizations(prev => [...prev, { ...data, id: Date.now(), status: 'active', proposalCount: 0, voteCount: 0, createdAt: new Date().toISOString().slice(0,10) }]);
+      } else if (modal.mode === 'update') {
+        setOrganizations(prev => prev.map(o => o.id === modal.org.id ? { ...o, ...data } : o));
+      }
+      closeModal();
+    } catch (e) { setFormError('Failed to save.'); }
+    setFormLoading(false);
+  };
+  const handleResetSubmit = async (data) => {
+    setFormLoading(true); setFormError('');
+    try {
+      // Simulate reset
+      closeResetModal();
+    } catch (e) { setFormError('Failed to reset password.'); }
+    setFormLoading(false);
+  };
+
   return (
     <AdminLayout>
       <div className="organization-management-page">
@@ -88,7 +170,7 @@ const OrganizationManagement = () => {
               <h1 className="heading-1">Organization Management</h1>
               <p className="text-large">Manage organizations, their permissions, and policy participation</p>
             </div>
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={openAddModal}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14m-7-7h14"/>
               </svg>
@@ -96,12 +178,12 @@ const OrganizationManagement = () => {
             </button>
           </div>
 
-          {/* Search and Filters */}
+          {/* Search and Filters + Export */}
           <div className="search-card card">
             <div className="card-header">
-              <h3 className="heading-3">Search & Filter</h3>
+              <h3 className="heading-3">Search, Filter & Export</h3>
             </div>
-            <div className="search-content">
+            <div className="search-content" style={{ flexWrap: 'wrap', gap: 16 }}>
               <div className="search-input-container">
                 <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8"/>
@@ -115,12 +197,49 @@ const OrganizationManagement = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <button className="btn btn-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
-                </svg>
-                Filter
+              <div style={{ minWidth: 180 }}>
+                <Select value={countryFilter} onValueChange={val => { setCountryFilter(val); setStateFilter(''); }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Countries" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Countries</SelectItem>
+        <SelectItem value="__all__">All Countries</SelectItem>
+                    {countries.map(c => (
+                      <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div style={{ minWidth: 180 }}>
+                <Select value={stateFilter} onValueChange={setStateFilter} disabled={!countryFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All States" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All States</SelectItem>
+        <SelectItem value="__all__">All States</SelectItem>
+    const matchesCountry = countryFilter === "__all__" || !countryFilter || org.country === countryFilter;
+    const matchesState = stateFilter === "__all__" || !stateFilter || org.state === stateFilter;
+                    {countries.find(c => c.code === countryFilter)?.states.map(s => (
+                      <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <button className="btn btn-secondary" onClick={() => setExportModal(true)} type="button">
+                Export
               </button>
+              {exportModal && (
+                <div className="modal-overlay">
+                  <div className="modal-content" style={{ maxWidth: 340, padding: 32 }}>
+                    <h3 className="heading-3 mb-4">Export Data</h3>
+                    <button className="btn btn-primary w-full mb-2" onClick={() => handleExport('excel')}>Export as Excel</button>
+                    <button className="btn btn-secondary w-full mb-4" onClick={() => handleExport('pdf')}>Export as PDF</button>
+                    <button className="btn btn-link w-full" onClick={() => setExportModal(false)}>Cancel</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -194,14 +313,62 @@ const OrganizationManagement = () => {
                             </svg>
                           </button>
                           <div className="dropdown-menu">
-                            <button className="dropdown-item">
+                            <button className="dropdown-item" onClick={() => openEditModal(org)}>
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
                               </svg>
                               View Details
                             </button>
-                            <button className="dropdown-item">
+                            <button className="dropdown-item" onClick={() => openResetModal(org)}>
+      {/* Modal for Add/Edit Organization */}
+      {modal.open && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <OrganizationForm
+              mode={modal.mode}
+              initialData={modal.org || {}}
+              onSubmit={handleOrgSubmit}
+              onCancel={closeModal}
+              loading={formLoading}
+              error={formError}
+              checkUnique={checkUnique}
+            />
+          </div>
+        </div>
+      )}
+      {/* Modal for Reset Password */}
+      {resetModal.open && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <ResetOrganizationPasswordForm
+              onSubmit={handleResetSubmit}
+              onCancel={closeResetModal}
+              loading={formLoading}
+              error={formError}
+            />
+          </div>
+        </div>
+      )}
+      <style jsx>{`
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(44,90,160,0.15);
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .modal-content {
+          background: var(--white);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-xl);
+          padding: 0;
+          max-width: 700px;
+          width: 100%;
+        }
+      `}</style>
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                 <path d="m18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>
