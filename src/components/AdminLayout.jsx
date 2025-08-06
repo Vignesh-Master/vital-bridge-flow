@@ -1,3 +1,4 @@
+        /* Responsive styles moved to App.css */
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -86,18 +87,11 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="admin-layout">
-      {/* Mobile sidebar overlay */}
-
-      {/* Overlay for mobile */}
-      {sidebarOpen && window.innerWidth <= 1024 && (
-        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
-      )}
-
-      {/* Sidebar */}
-      <div className={`admin-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}> 
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+      {/* Top Navbar (horizontal, like public page) */}
+      <header className="admin-top-navbar">
+        <div className="admin-navbar-inner">
+          <div className="navbar-logo">
+            <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
               <rect width="40" height="40" rx="8" fill="url(#gradient1)"/>
               <path d="M20 12C16.686 12 14 14.686 14 18s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 8c-1.103 0-2-.897-2-2s.897-2 2-2 2 .897 2 2-.897 2-2 2z" fill="white"/>
               <path d="M20 26c-3.314 0-6 2.686-6 6v2h12v-2c0-3.314-2.686-6-6-6z" fill="white"/>
@@ -108,50 +102,46 @@ const AdminLayout = ({ children }) => {
                 </linearGradient>
               </defs>
             </svg>
-            <span className="sidebar-logo-text">OrganLink Admin</span>
+            <span className="navbar-logo-text">OrganLink Admin</span>
           </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`nav-link ${isCurrentPage(item.href) ? 'nav-link-active' : ''}`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-text">{item.name}</span>
-            </Link>
-          ))}
-        </nav>
-
-        {/* Admin User Info */}
-        <div className="sidebar-footer">
-          <div className="admin-user-info">
-            <div className="admin-avatar">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2"/>
+          <nav className="admin-navbar-links">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`navbar-link ${isCurrentPage(item.href) ? 'navbar-link-active' : ''}`}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span className="nav-text">{item.name}</span>
+              </Link>
+            ))}
+          </nav>
+          <div className="admin-navbar-right">
+            <div className="admin-user-info">
+              <div className="admin-avatar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </div>
+              <div className="admin-details">
+                <p className="admin-name">{adminUser.username || 'Admin'}</p>
+                <p className="admin-role">Administrator</p>
+              </div>
+            </div>
+            <button onClick={handleLogout} className="btn btn-danger btn-small">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-            </div>
-            <div className="admin-details">
-              <p className="admin-name">{adminUser.username || 'Admin'}</p>
-              <p className="admin-role">Administrator</p>
-            </div>
+              Logout
+            </button>
           </div>
-          <button onClick={handleLogout} className="btn btn-danger btn-small w-full">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Logout
-          </button>
         </div>
-      </div>
+      </header>
 
       {/* Main content */}
-      <div className={`admin-main${sidebarOpen ? '' : ' main-expanded'}`}>
-        {/* Top bar */}
-        <div className="admin-header">
+      <div className="admin-main">
+        {/* Sticky Top bar */}
+        <div className="admin-header sticky-admin-header">
           <button onClick={() => setSidebarOpen((open) => !open)} className="sidebar-toggle-btn" aria-label="Toggle sidebar">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -177,104 +167,113 @@ const AdminLayout = ({ children }) => {
         {/* Page content */}
         <main className="admin-content">
           {children}
+          {/* Scroll to top button (styled like public page) */}
+          <button className="scroll-to-top-btn-admin" onClick={() => window.scrollTo({top:0,behavior:'smooth'})} title="Scroll to top">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" stroke="#2563eb" strokeWidth="2" fill="#fff"/>
+              <path d="M12 16V8" stroke="#2563eb" strokeWidth="2"/>
+              <path d="M8 12l4-4 4 4" stroke="#2563eb" strokeWidth="2"/>
+            </svg>
+          </button>
         </main>
       </div>
 
       <style jsx>{`
+        .sticky-admin-header {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          background: #f8fafc;
+          box-shadow: 0 2px 8px rgba(44,90,160,0.04);
+        }
+        .scroll-to-top-btn-admin {
+          position: fixed;
+          right: 24px;
+          bottom: 24px;
+          background: #fff;
+          border: 2px solid #2563eb;
+          border-radius: 50%;
+          box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: box-shadow 0.2s, background 0.2s;
+          z-index: 1200;
+        }
+        .scroll-to-top-btn-admin:hover {
+          box-shadow: 0 8px 32px rgba(37,99,235,0.18);
+          background: #e0e7ff;
+        }
         .admin-layout {
           min-height: 100vh;
-          display: flex;
           background-color: var(--gray-50);
         }
 
-        .sidebar-overlay {
-          position: fixed;
-          inset: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 40;
-          display: none;
-        }
-
-        .admin-sidebar {
-          position: fixed;
+        .admin-top-navbar {
+          position: sticky;
           top: 0;
-          left: 0;
-          height: 100vh;
-          width: 280px;
-          background: linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%);
-          box-shadow: var(--shadow-xl);
-          z-index: 50;
-          transform: translateX(-100%);
-          transition: transform var(--transition-normal);
-          display: flex;
-          flex-direction: column;
-          border-right: 1px solid var(--gray-200);
+          z-index: 100;
+          width: 100%;
+          background: #fff;
+          box-shadow: 0 6px 32px rgba(44,90,160,0.13);
+          border-bottom: 1.5px solid #e5eaf2;
+          padding: 0;
         }
-
-        .sidebar-open {
-          transform: translateX(0);
-        }
-
-        .sidebar-header {
-          padding: var(--spacing-lg);
-          border-bottom: 1px solid var(--gray-200);
-          background: var(--gradient-primary);
-        }
-
-        .sidebar-logo {
+        .admin-navbar-inner {
+          max-width: 1400px;
+          margin: 0 auto;
           display: flex;
           align-items: center;
-          gap: var(--spacing-sm);
+          justify-content: space-between;
+          height: 80px;
+          padding: 0 36px;
         }
-
-        .sidebar-logo-text {
+        .navbar-logo {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          margin-right: 44px;
+        }
+        .navbar-logo-text {
           font-family: var(--font-heading);
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--white);
+          font-size: 1.45rem;
+          font-weight: 800;
+          color: #1e293b;
+          letter-spacing: 0.5px;
         }
-
-        .sidebar-nav {
-          flex: 1;
-          padding: var(--spacing-lg) var(--spacing-md);
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-xs);
-        }
-
-        .nav-link {
+        .admin-navbar-links {
           display: flex;
           align-items: center;
-          gap: var(--spacing-md);
-          padding: var(--spacing-md) var(--spacing-lg);
-          color: var(--gray-700);
+          gap: 2px;
+          flex: 1;
+          justify-content: center;
+        }
+        .navbar-link {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 28px;
+          color: #1e293b;
           text-decoration: none;
-          border-radius: var(--radius-lg);
-          font-weight: 500;
-          transition: all var(--transition-normal);
-          margin-bottom: var(--spacing-xs);
-          border: 1px solid transparent;
+          border-radius: 12px;
+          font-weight: 600;
+          font-size: 1.08rem;
+          transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+          box-shadow: none;
         }
-
-        .nav-link:hover {
-          background-color: rgba(44, 90, 160, 0.05);
-          color: var(--primary-blue);
-          border-color: rgba(44, 90, 160, 0.1);
-          transform: translateX(4px);
+        .navbar-link:hover {
+          background: #e0e7ff;
+          color: #2563eb;
+          box-shadow: 0 2px 8px rgba(44,90,160,0.10);
         }
-
-        .nav-link-active {
-          background: var(--gradient-primary);
-          color: var(--white);
-          border-color: var(--primary-blue);
-          box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        .navbar-link-active {
+          background: linear-gradient(90deg, #2563eb 0%, #2d9cdb 100%);
+          color: #fff;
+          box-shadow: 0 4px 16px rgba(44,90,160,0.15);
         }
-
-        .nav-link-active:hover {
-          color: var(--white);
-          transform: translateX(0);
-        }
-
         .nav-icon {
           display: flex;
           align-items: center;
@@ -282,62 +281,49 @@ const AdminLayout = ({ children }) => {
           width: 20px;
           height: 20px;
         }
-
         .nav-text {
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 500;
         }
-
-        .sidebar-footer {
-          padding: var(--spacing-lg);
-          border-top: 1px solid var(--gray-200);
+        .admin-navbar-right {
+          display: flex;
+          align-items: center;
+          gap: 22px;
         }
-
         .admin-user-info {
           display: flex;
           align-items: center;
-          gap: var(--spacing-md);
-          margin-bottom: var(--spacing-md);
+          gap: 12px;
         }
-
         .admin-avatar {
-          width: 40px;
-          height: 40px;
-          background-color: rgba(44, 90, 160, 0.1);
+          width: 38px;
+          height: 38px;
+          background-color: #e0e7ff;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--primary-blue);
+          color: #2563eb;
         }
-
         .admin-details {
-          flex: 1;
-        }
-
-        .admin-name {
-          font-weight: 600;
-          color: var(--gray-900);
-          margin: 0;
-          font-size: 0.875rem;
-        }
-
-        .admin-role {
-          font-size: 0.75rem;
-          color: var(--gray-500);
-          margin: 0;
-        }
-
-        .admin-main {
-          flex: 1;
-          margin-left: 280px;
           display: flex;
           flex-direction: column;
-          transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
         }
-
-        .main-expanded {
-          margin-left: 80px;
+        .admin-name {
+          font-weight: 700;
+          color: #1e293b;
+          margin: 0;
+          font-size: 1rem;
+        }
+        .admin-role {
+          font-size: 0.8rem;
+          color: #64748b;
+          margin: 0;
+        }
+        .admin-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
         }
 
         .admin-header {

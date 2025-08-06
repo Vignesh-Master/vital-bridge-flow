@@ -1,19 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import { countries } from '@/lib/locationData';
 
-// Simulate fetching orgs/hospitals from localStorage or API (for demo, use static data)
-const getOrganizations = () => [
-  {
-    id: 1, name: 'Heart Foundation India', country: 'IN', state: 'TN', status: 'active', type: 'NGO', contactPerson: 'Dr. Sarah Johnson', email: 'contact@heartfoundation.org', phone: '+91 9876543210',
-  },
-  {
-    id: 2, name: 'Ministry of Health', country: 'IN', state: 'DL', status: 'active', type: 'Government', contactPerson: 'Mr. Rajesh Kumar', email: 'health@gov.in', phone: '+91 9876543211',
-  },
-  {
-    id: 3, name: 'Medical Research Institute', country: 'US', state: 'CA', status: 'active', type: 'Research', contactPerson: 'Dr. Priya Sharma', email: 'research@mri.edu', phone: '+91 9876543212',
-  },
-];
+// Simulate fetching hospitals from API or state
 const getHospitals = () => [
   {
     id: 1, name: 'Apollo Hospital Chennai', country: 'IN', state: 'TN', status: 'active', city: 'Chennai', contactPersonName: 'Dr. Raj Kumar', email: 'admin@apollo-chennai.com', phone: '+91 9876543210',
@@ -30,30 +19,70 @@ const getHospitals = () => [
 ];
 
 export default function ViewLocations() {
-  const organizations = useMemo(getOrganizations, []);
   const hospitals = useMemo(getHospitals, []);
+  const [search, setSearch] = useState('');
+  const [exportModal, setExportModal] = useState(false);
 
-  // Build a flat list of all locations with org/hospital counts
+  // Build a flat list of all locations with hospital details
   const locations = useMemo(() => {
     const locs = [];
     countries.forEach(country => {
       country.states.forEach(state => {
-        const orgs = organizations.filter(o => o.country === country.code && o.state === state.code);
         const hosps = hospitals.filter(h => h.country === country.code && h.state === state.code);
-        if (orgs.length > 0 || hosps.length > 0) {
+        if (hosps.length > 0) {
           locs.push({
             country: country.name,
             countryCode: country.code,
             state: state.name,
             stateCode: state.code,
-            orgs,
             hosps,
           });
         }
       });
     });
     return locs;
-  }, [organizations, hospitals]);
+  }, [hospitals]);
+
+  // Filtered locations by search
+  const filteredLocations = useMemo(() => {
+    if (!search.trim()) return locations;
+    const s = search.toLowerCase();
+    return locations.filter(loc =>
+      loc.country.toLowerCase().includes(s) ||
+      loc.state.toLowerCase().includes(s) ||
+      loc.hosps.some(h => h.name.toLowerCase().includes(s) || h.city.toLowerCase().includes(s))
+    );
+  }, [locations, search]);
+
+  // Export logic
+  const handleExport = (type) => {
+    const header = ['Country','State','Hospital Name','City','Contact','Email','Phone'];
+    const rows = filteredLocations.flatMap(loc =>
+      loc.hosps.map(h => [loc.country, loc.state, h.name, h.city, h.contactPersonName, h.email, h.phone])
+    );
+    if (type === 'csv') {
+      const csv = [header, ...rows].map(r => r.map(x => `"${x||''}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'locations.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (type === 'excel') {
+      const csv = [header, ...rows].map(r => r.map(x => `"${x||''}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'application/vnd.ms-excel' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'locations.xls';
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (type === 'pdf') {
+      window.print(); // Placeholder for PDF export
+    }
+    setExportModal(false);
+  };
 
   return (
     <AdminLayout>
@@ -62,15 +91,30 @@ export default function ViewLocations() {
           <div className="page-header">
             <div className="header-content">
               <h1 className="heading-1">Location Management</h1>
-              <p className="text-large">View all registered locations with their organizations and hospitals.</p>
+              <p className="text-large">View all countries, states, and hospitals joined in OrganLink.</p>
+            </div>
+            <button className="btn btn-primary" onClick={() => setExportModal(true)}>
+              Export
+            </button>
+          </div>
+          <div className="search-card card" style={{marginBottom:24}}>
+            <div className="search-content" style={{display:'flex',gap:16,alignItems:'center'}}>
+              <input
+                type="text"
+                className="form-input search-input"
+                placeholder="Search by country, state, hospital, or city..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{flex:1,minWidth:220}}
+              />
             </div>
           </div>
           <div className="table-card card">
             <div className="card-header">
               <div className="table-header">
                 <div>
-                  <h3 className="heading-3">Locations ({locations.length})</h3>
-                  <p className="text-normal">All countries and states with registered organizations or hospitals</p>
+                  <h3 className="heading-3">Locations ({filteredLocations.length})</h3>
+                  <p className="text-normal">All countries and states with registered hospitals</p>
                 </div>
               </div>
             </div>
@@ -80,26 +124,14 @@ export default function ViewLocations() {
                   <tr>
                     <th>Country</th>
                     <th>State</th>
-                    <th>Organizations</th>
                     <th>Hospitals</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {locations.map(loc => (
+                  {filteredLocations.map(loc => (
                     <tr key={loc.countryCode + '-' + loc.stateCode}>
                       <td>{loc.country}</td>
                       <td>{loc.state}</td>
-                      <td>
-                        {loc.orgs.length > 0 ? (
-                          <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-                            {loc.orgs.map(org => (
-                              <li key={org.id} style={{ marginBottom: 4 }}>
-                                <span className="org-name">{org.name}</span> <span className="org-type-badge">({org.type})</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : <span className="text-muted">—</span>}
-                      </td>
                       <td>
                         {loc.hosps.length > 0 ? (
                           <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
@@ -118,16 +150,20 @@ export default function ViewLocations() {
             </div>
           </div>
         </div>
+        {/* Export Modal */}
+        {exportModal && (
+          <div className="modal-blur-overlay">
+            <div className="modal-center-content">
+              <h3 className="heading-3 mb-4">Export Data</h3>
+              <button className="btn btn-primary w-full mb-2" onClick={() => handleExport('csv')}>Export as CSV</button>
+              <button className="btn btn-secondary w-full mb-2" onClick={() => handleExport('excel')}>Export as Excel</button>
+              <button className="btn btn-secondary w-full mb-4" onClick={() => handleExport('pdf')}>Export as PDF</button>
+              <button className="btn btn-link w-full" onClick={() => setExportModal(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
       </div>
       <style jsx>{`
-        .org-type-badge {
-          background: rgba(44,90,160,0.08);
-          color: #2c5aa0;
-          border-radius: 4px;
-          font-size: 0.8em;
-          padding: 2px 6px;
-          margin-left: 4px;
-        }
         .hosp-city {
           color: #888;
           font-size: 0.8em;
@@ -135,6 +171,24 @@ export default function ViewLocations() {
         }
         .text-muted {
           color: #bbb;
+        }
+        .modal-blur-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(44,90,160,0.18);
+          backdrop-filter: blur(4px);
+          z-index: 2000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .modal-center-content {
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 8px 32px rgba(44,90,160,0.18);
+          padding: 40px 32px 32px 32px;
+          min-width: 320px;
+          max-width: 95vw;
         }
       `}</style>
     </AdminLayout>

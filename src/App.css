@@ -40,3 +40,30 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Admin Navbar Responsive Styles */
+@media (max-width: 1100px) {
+  .admin-navbar-links {
+    gap: 0;
+  }
+  .navbar-link {
+    padding: 10px 10px;
+    font-size: 0.98rem;
+  }
+}
+@media (max-width: 900px) {
+  .admin-navbar-inner {
+    flex-direction: column;
+    height: auto;
+    padding: 0 10px;
+  }
+  .admin-navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .admin-navbar-user {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}

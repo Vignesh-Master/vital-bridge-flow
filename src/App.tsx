@@ -72,8 +72,8 @@ const App = () => (
           <Route path="/hospital/match-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
           <Route path="/hospital/faq" element={<HospitalFAQs />} />
 
-          {/* Legacy Routes (for backward compatibility) */}
-          {/* Optionally, you can remove these if not needed */}
+          {/* Legacy Routes (for backward compatibility)
+          Optionally, you can remove these if not needed
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -82,7 +82,7 @@ const App = () => (
           <Route path="/donor-status" element={<ProtectedRoute><DonorStatus /></ProtectedRoute>} />
           <Route path="/patient-status" element={<ProtectedRoute><PatientStatus /></ProtectedRoute>} />
           <Route path="/matching-dashboard" element={<ProtectedRoute><MatchingDashboard /></ProtectedRoute>} />
-          <Route path="/faqs" element={<PublicFAQs />} />
+          <Route path="/faqs" element={<PublicFAQs />} /> */}
 
           {/* Admin Module */}
           <Route path="/admin/login" element={<AdminLogin />} />
