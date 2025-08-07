@@ -42,19 +42,12 @@ const CreateHospital = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
-      // Validation
       if (formData.password !== formData.confirmPassword) {
         throw new Error('Passwords do not match');
       }
-
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       alert(`Hospital created successfully: ${formData.hospitalName} (${formData.hospitalCode})`);
-      
-      // Reset form
       setFormData({
         hospitalName: '',
         hospitalCode: '',

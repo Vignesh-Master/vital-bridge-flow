@@ -1,319 +1,106 @@
 import React, { useState } from 'react';
-import { countries } from '@/lib/locationData';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { useNavigate } from 'react-router-dom';
-import AdminLayout from '@/components/AdminLayout';
-import OrganizationForm from './OrganizationForm';
-import ResetOrganizationPasswordForm from './ResetOrganizationPasswordForm';
+import { FaSearch, FaBuilding, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+
+const demoOrganizations = [
+  {
+    id: 1,
+    name: 'Global Health Org',
+    email: 'contact@globalhealth.org',
+    country: 'USA',
+    status: 'Active',
+    createdAt: '2023-01-15',
+  },
+  {
+    id: 2,
+    name: 'Transplant Network',
+    email: 'info@transplantnet.com',
+    country: 'India',
+    status: 'Pending',
+    createdAt: '2023-03-22',
+  },
+  {
+    id: 3,
+    name: 'LifeLink Foundation',
+    email: 'hello@lifelink.org',
+    country: 'UK',
+    status: 'Active',
+    createdAt: '2022-11-09',
+  },
+];
+
+const statusColors = {
+  Active: 'bg-green-100 text-green-700',
+  Pending: 'bg-yellow-100 text-yellow-700',
+  Inactive: 'bg-gray-100 text-gray-700',
+};
 
 const OrganizationManagement = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [countryFilter, setCountryFilter] = useState('__all__');
-  const [stateFilter, setStateFilter] = useState('__all__');
-  const [organizations, setOrganizations] = useState([
-    {
-      id: 1,
-      name: 'Heart Foundation India',
-      code: 'NGO-001',
-      type: 'NGO',
-      country: 'IN',
-      state: 'TN',
-      contactPerson: 'Dr. Sarah Johnson',
-      email: 'contact@heartfoundation.org',
-      phone: '+91 9876543210',
-      canPropose: true,
-      canVote: true,
-      status: 'active',
-      proposalCount: 5,
-      voteCount: 23,
-      createdAt: '2024-01-15'
-    },
-    {
-      id: 2,
-      name: 'Ministry of Health',
-      code: 'GOV-001',
-      type: 'Government',
-      country: 'IN',
-      state: 'DL',
-      contactPerson: 'Mr. Rajesh Kumar',
-      email: 'health@gov.in',
-      phone: '+91 9876543211',
-      canPropose: true,
-      canVote: true,
-      status: 'active',
-      proposalCount: 12,
-      voteCount: 45,
-      createdAt: '2024-01-20'
-    },
-    {
-      id: 3,
-      name: 'Medical Research Institute',
-      code: 'RES-001',
-      type: 'Research',
-      country: 'US',
-      state: 'CA',
-      contactPerson: 'Dr. Priya Sharma',
-      email: 'research@mri.edu',
-      phone: '+91 9876543212',
-      canPropose: false,
-      canVote: true,
-      status: 'active',
-      proposalCount: 0,
-      voteCount: 18,
-      createdAt: '2024-02-01'
-    }
-  ]);
+  const [search, setSearch] = useState('');
+  const [organizations, setOrganizations] = useState(demoOrganizations);
 
-  // Modal state
-  const [modal, setModal] = useState({ open: false, mode: '', org: null });
-  const [resetModal, setResetModal] = useState({ open: false, org: null });
-  const [formLoading, setFormLoading] = useState(false);
-  const [formError, setFormError] = useState('');
-
-  const filteredOrganizations = organizations.filter(org => {
-    const matchesSearch =
-      org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      org.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      org.type.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCountry = !countryFilter || org.country === countryFilter;
-    const matchesState = !stateFilter || org.state === stateFilter;
-    return matchesSearch && matchesCountry && matchesState;
-  });
-
-  const [exportModal, setExportModal] = useState(false);
-  const handleExport = (type) => {
-    const header = ['Name','Code','Type','Country','State','Contact','Email','Phone'];
-    const rows = filteredOrganizations.map(o => [o.name,o.code,o.type,o.country||'',o.state||'',o.contactPerson,o.email,o.phone]);
-    if (type === 'csv') {
-      const csv = [header, ...rows].map(r => r.map(x => `"${x||''}"`).join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'organizations.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    } else if (type === 'excel') {
-      const csv = [header, ...rows].map(r => r.map(x => `"${x||''}"`).join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'application/vnd.ms-excel' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'organizations.xls';
-      a.click();
-      URL.revokeObjectURL(url);
-    } else if (type === 'pdf') {
-      window.print(); // Placeholder for PDF export
-    }
-    setExportModal(false);
-  };
-
-  const getStatusBadge = (status) => {
-    return status === 'active' 
-      ? <span className="status-badge status-matched">Active</span>
-      : <span className="status-badge status-high">Inactive</span>;
-  };
-
-  const getTypeBadge = (type) => {
-    const typeClasses = {
-      'NGO': 'type-badge type-ngo',
-      'Government': 'type-badge type-government',
-      'Research': 'type-badge type-research',
-      'Medical': 'type-badge type-medical'
-    };
-    return (
-      <span className={typeClasses[type] || 'type-badge type-default'}>
-        {type}
-      </span>
-    );
-  };
+  const filteredOrgs = organizations.filter(org =>
+    org.name.toLowerCase().includes(search.toLowerCase()) ||
+    org.email.toLowerCase().includes(search.toLowerCase()) ||
+    org.country.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <>
-      <AdminLayout>
-        <div className="organization-management-page">
-          <div className="container">
-            {/* Header */}
-            <div className="page-header">
-              <div className="header-content">
-                <h1 className="heading-1">Organization Management</h1>
-                <p className="text-large">Manage organizations, their permissions, and policy participation</p>
-              </div>
-              <button className="btn btn-primary" onClick={openAddModal}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 5v14m-7-7h14"/>
-                </svg>
-                Add Organization
-              </button>
-            </div>
-
-            {/* Filter/Search Card */}
-            <div className="search-card card">
-              <div className="search-content">
-                <div className="search-input-container">
-                  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="m21 21-4.35-4.35"/>
-                  </svg>
-                  <input
-                    type="text"
-                    className="form-input search-input"
-                    placeholder="Search organizations by name, code, or type..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div style={{ minWidth: 180 }}>
-                  <Select value={countryFilter} onValueChange={val => { setCountryFilter(val); setStateFilter(''); }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Countries" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__all__">All Countries</SelectItem>
-                      {countries.map(c => (
-                        <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div style={{ minWidth: 180 }}>
-                  <Select value={stateFilter} onValueChange={setStateFilter} disabled={!countryFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All States" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__all__">All States</SelectItem>
-                      {countries.find(c => c.code === countryFilter)?.states.map(s => (
-                        <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <button className="btn btn-primary export-btn" onClick={() => setExportModal(true)} type="button">
-                  Export
-                </button>
-              </div>
-            </div>
-
-            {/* Export Modal - only one instance, outside the table and card */}
-            {exportModal && (
-              <div className="modal-blur-overlay">
-                <div className="modal-center-content">
-                  <h3 className="heading-3 mb-4">Export Data</h3>
-                  <button className="btn btn-primary w-full mb-2" onClick={() => handleExport('pdf')}>Export as PDF</button>
-                  <button className="btn btn-secondary w-full mb-2" onClick={() => handleExport('csv')}>Export as CSV</button>
-                  <button className="btn btn-secondary w-full mb-2" onClick={() => handleExport('excel')}>Export as Excel</button>
-                  <button className="btn btn-link w-full" onClick={() => setExportModal(false)}>Cancel</button>
-                </div>
-              </div>
-            )}
-
-            {/* Organizations Table */}
-            <div className="table-card card">
-              <div className="card-header">
-                <div className="table-header">
-                  <span>Organizations</span>
-                </div>
-              </div>
-              <div className="table-container">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Code</th>
-                      <th>Type</th>
-                      <th>Country</th>
-                      <th>State</th>
-                      <th>Contact</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredOrganizations.map(org => (
-                      <tr key={org.id}>
-                        <td>
-                          <div className="org-details">
-                            <span className="org-name">{org.name}</span>
-                          </div>
-                        </td>
-                        <td><span className="code-badge">{org.code}</span></td>
-                        <td>{getTypeBadge(org.type)}</td>
-                        <td>{org.country}</td>
-                        <td>{org.state}</td>
-                        <td>{org.contactPerson}</td>
-                        <td><span className="org-email">{org.email}</span></td>
-                        <td><span className="org-phone">{org.phone}</span></td>
-                        <td>{getStatusBadge(org.status)}</td>
-                        <td>
-                          <button className="btn btn-sm">Actions</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Summary Cards */}
-            <div className="summary-grid">
-              <div className="summary-card card">
-                <div className="summary-content">
-                  <p className="summary-label">Total Organizations</p>
-                  <h3 className="summary-value">{organizations.length}</h3>
-                </div>
-                <div className="summary-icon">🏢</div>
-              </div>
-              <div className="summary-card card">
-                <div className="summary-content">
-                  <p className="summary-label">Can Propose</p>
-                  <h3 className="summary-value">{organizations.filter(o => o.canPropose).length}</h3>
-                </div>
-                <div className="summary-icon">📝</div>
-              </div>
-              <div className="summary-card card">
-                <div className="summary-content">
-                  <p className="summary-label">Can Vote</p>
-                  <h3 className="summary-value">{organizations.filter(o => o.canVote).length}</h3>
-                </div>
-                <div className="summary-icon">🗳️</div>
-              </div>
-              <div className="summary-card card">
-                <div className="summary-content">
-                  <p className="summary-label">Active</p>
-                  <h3 className="summary-value">{organizations.filter(o => o.status === 'active').length}</h3>
-                </div>
-                <div className="summary-icon">🟢</div>
-              </div>
-              <div className="summary-card card">
-                <div className="summary-content">
-                  <p className="summary-label">Total Proposals</p>
-                  <h3 className="summary-value">{organizations.reduce((sum, o) => sum + o.proposalCount, 0)}</h3>
-                </div>
-                <div className="summary-icon">📊</div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-100 py-10 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-blue-900 flex items-center gap-2">
+            <FaBuilding className="text-blue-500" /> Organizations
+          </h1>
+          <button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform font-semibold">
+            <FaPlus /> Add Organization
+          </button>
+        </div>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-blue-200 shadow focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              placeholder="Search organizations..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" />
           </div>
-
-          {/* Modal for Reset Password */}
-          {resetModal.open && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <ResetOrganizationPasswordForm
-                  onSubmit={handleResetSubmit}
-                  onCancel={closeResetModal}
-                  loading={formLoading}
-                  error={formError}
-                />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredOrgs.length === 0 ? (
+            <div className="col-span-full text-center text-gray-500 py-10 text-lg">No organizations found.</div>
+          ) : (
+            filteredOrgs.map(org => (
+              <div
+                key={org.id}
+                className="bg-white rounded-2xl shadow-xl p-6 flex flex-col gap-3 border border-blue-100 hover:shadow-2xl transition-shadow relative overflow-hidden"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <FaBuilding className="text-2xl text-blue-400" />
+                  <span className="text-xl font-semibold text-blue-900">{org.name}</span>
+                  <span className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${statusColors[org.status]}`}>{org.status}</span>
+                </div>
+                <div className="text-gray-600 text-sm flex flex-col gap-1">
+                  <span><span className="font-medium text-blue-700">Email:</span> {org.email}</span>
+                  <span><span className="font-medium text-blue-700">Country:</span> {org.country}</span>
+                  <span><span className="font-medium text-blue-700">Created:</span> {org.createdAt}</span>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition">
+                    <FaEdit /> Edit
+                  </button>
+                  <button className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition">
+                    <FaTrash /> Delete
+                  </button>
+                </div>
+                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 rounded-full z-0"></div>
               </div>
-            </div>
+            ))
           )}
         </div>
-      </AdminLayout>
-    </>
+      </div>
+    </div>
   );
 };
 

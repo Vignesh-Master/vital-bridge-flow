@@ -1,0 +1,10 @@
+[33ma1fe493[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m thursday
+[33m723f056[m error
+[33me0ba94d[m wednesday
+[33m1d350b6[m Update README.md
+[33m922c315[m tuesaday-morning
+[33m17715ca[m Fix public page styling and admin navigation
+[33m6bd8363[m Fix AdminLayout syntax error
+[33m510c28c[m Fix hospital login import path
+[33md20fd87[m Fix: Resolve public home page import error
+[33md6015ae[m Fix: Resolve build errors due to merge conflicts
