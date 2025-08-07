@@ -80,22 +80,22 @@ const CreateHospital = () => {
 
   return (
     <AdminLayout>
-      <div className="create-hospital-page">
-        <div className="container">
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
           {/* Header */}
-          <div className="page-header">
-            <h1 className="heading-1">Create Hospital</h1>
-            <p className="text-large">Register a new hospital in the OrganLink system</p>
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Create Hospital</h1>
+            <p className="text-xl text-gray-600">Register a new hospital in the OrganLink system</p>
           </div>
 
           {/* Form Card */}
-          <div className="form-card card">
-            <div className="card-header">
-              <h3 className="heading-3">Hospital Registration Form</h3>
-              <p className="text-normal">Fill out all required information to register a new hospital</p>
+          <div className="bg-white rounded-lg shadow-md">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Hospital Registration Form</h3>
+              <p className="text-gray-600">Fill out all required information to register a new hospital</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="hospital-form">
+            <form onSubmit={handleSubmit} className="p-6">
               {/* Location Information */}
               <div className="form-section">
                 <h4 className="section-title">Location Information</h4>
@@ -343,95 +343,6 @@ const CreateHospital = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .create-hospital-page {
-          min-height: calc(100vh - 200px);
-          padding: var(--spacing-xl) 0;
-        }
-
-        .page-header {
-          margin-bottom: var(--spacing-2xl);
-          text-align: center;
-        }
-
-        .form-card {
-          max-width: 900px;
-          margin: 0 auto;
-        }
-
-        .hospital-form {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-2xl);
-        }
-
-        .form-section {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-lg);
-        }
-
-        .section-title {
-          font-family: var(--font-heading);
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: var(--gray-800);
-          margin: 0;
-          padding-bottom: var(--spacing-sm);
-          border-bottom: 2px solid var(--primary-blue);
-        }
-
-        .form-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--spacing-lg);
-        }
-
-        .form-group-full {
-          grid-column: 1 / -1;
-        }
-
-        .code-input-group {
-          display: flex;
-          gap: var(--spacing-sm);
-        }
-
-        .code-input-group .form-input {
-          flex: 1;
-        }
-
-        .code-generate-btn {
-          white-space: nowrap;
-          min-width: 100px;
-        }
-
-        .form-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: var(--spacing-md);
-          padding-top: var(--spacing-xl);
-          border-top: 1px solid var(--gray-200);
-        }
-
-        @media (max-width: 768px) {
-          .form-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .form-actions {
-            flex-direction: column;
-          }
-          
-          .form-actions .btn {
-            width: 100%;
-          }
-
-          .code-input-group {
-            flex-direction: column;
-          }
-        }
-      `}</style>
     </AdminLayout>
   );
 };

@@ -51,458 +51,206 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="dashboard">
-        <div className="container">
+      <div className="min-h-[calc(100vh-200px)]">
+        <div className="container mx-auto px-4">
           {/* Header Section */}
-          <div className="dashboard-header">
-            <div className="header-content">
+          <div className="bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl p-8 mb-8 text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
-                <h1 className="heading-1">Admin Dashboard</h1>
-                <p className="text-large">OrganLink Platform - System Overview & Management</p>
+                <h1 className="text-4xl font-bold font-heading mb-2">Admin Dashboard</h1>
+                <p className="text-xl text-blue-100">OrganLink Platform - System Overview & Management</p>
               </div>
-              <div className="header-image">
-                <img src={medicalDashboard} alt="Dashboard Analytics" className="dashboard-image" />
+              <div className="w-48 h-28 rounded-lg overflow-hidden">
+                <img src={medicalDashboard} alt="Dashboard Analytics" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-header">
-                <div className="stat-icon">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-12 h-12 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M3 21h18V9l-9-7-9 7v12z" stroke="currentColor" strokeWidth="2"/>
                     <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                 </div>
-                <div className="stat-change increase">+2</div>
+                <div className="text-sm font-semibold px-2 py-1 rounded-sm bg-green-100 text-green-600">+2</div>
               </div>
-              <div className="stat-content">
-                <h3 className="stat-value">{stats.totalHospitals}</h3>
-                <p className="stat-title">Total Hospitals</p>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.totalHospitals}</h3>
+                <p className="text-gray-600 font-medium">Total Hospitals</p>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <div className="stat-icon">
+            <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-12 h-12 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
                     <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                 </div>
-                <div className="stat-change increase">+1</div>
+                <div className="text-sm font-semibold px-2 py-1 rounded-sm bg-green-100 text-green-600">+1</div>
               </div>
-              <div className="stat-content">
-                <h3 className="stat-value">{stats.totalOrganizations}</h3>
-                <p className="stat-title">Organizations</p>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.totalOrganizations}</h3>
+                <p className="text-gray-600 font-medium">Organizations</p>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <div className="stat-icon">
+            <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-12 h-12 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeWidth="2"/>
                     <path d="M15 3h6v6" stroke="currentColor" strokeWidth="2"/>
                     <path d="M10 14L21 3" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                 </div>
-                <div className="stat-change increase">{stats.pendingProposals}</div>
+                <div className="text-sm font-semibold px-2 py-1 rounded-sm bg-green-100 text-green-600">{stats.pendingProposals}</div>
               </div>
-              <div className="stat-content">
-                <h3 className="stat-value">{stats.activePolicies}</h3>
-                <p className="stat-title">Active Policies</p>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.activePolicies}</h3>
+                <p className="text-gray-600 font-medium">Active Policies</p>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <div className="stat-icon">
+            <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-12 h-12 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="currentColor" strokeWidth="2"/>
                   </svg>
                 </div>
-                <div className="stat-change increase">+23</div>
+                <div className="text-sm font-semibold px-2 py-1 rounded-sm bg-green-100 text-green-600">+23</div>
               </div>
-              <div className="stat-content">
-                <h3 className="stat-value">{stats.totalVotes}</h3>
-                <p className="stat-title">Total Votes</p>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.totalVotes}</h3>
+                <p className="text-gray-600 font-medium">Total Votes</p>
               </div>
             </div>
           </div>
 
           {/* Main Content Grid */}
-          <div className="content-grid">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* System Status */}
-            <div className="content-card">
-              <div className="card-header">
-                <h3 className="heading-3">System Status</h3>
-                <span className="status-badge status-matched">All Systems Online</span>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">System Status</h3>
+                <span className="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">All Systems Online</span>
               </div>
-              <div className="system-status-list">
-                <div className="status-item">
-                  <div className="status-indicator healthy"></div>
-                  <span className="status-label">API Services</span>
-                  <span className="status-value">Healthy</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="font-medium text-gray-700">API Services</span>
+                  </div>
+                  <span className="text-sm text-green-600 font-semibold">Healthy</span>
                 </div>
-                <div className="status-item">
-                  <div className="status-indicator healthy"></div>
-                  <span className="status-label">Database</span>
-                  <span className="status-value">Online</span>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="font-medium text-gray-700">Database</span>
+                  </div>
+                  <span className="text-sm text-green-600 font-semibold">Online</span>
                 </div>
-                <div className="status-item">
-                  <div className="status-indicator healthy"></div>
-                  <span className="status-label">Blockchain</span>
-                  <span className="status-value">Connected</span>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="font-medium text-gray-700">Blockchain</span>
+                  </div>
+                  <span className="text-sm text-green-600 font-semibold">Connected</span>
                 </div>
-                <div className="status-item">
-                  <div className="status-indicator healthy"></div>
-                  <span className="status-label">AI Matching</span>
-                  <span className="status-value">Active</span>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="font-medium text-gray-700">AI Matching</span>
+                  </div>
+                  <span className="text-sm text-green-600 font-semibold">Active</span>
                 </div>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="content-card">
-              <div className="card-header">
-                <h3 className="heading-3">Recent Activity</h3>
-                <button className="view-all-btn">View All</button>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">Recent Activity</h3>
+                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
               </div>
-              <div className="activities-list">
+              <div className="space-y-4">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} className="activity-item">
-                    <div className={`activity-icon ${activity.status}`}>
+                  <div key={activity.id} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      activity.status === 'success' ? 'bg-green-100 text-green-600' :
+                      activity.status === 'warning' ? 'bg-yellow-100 text-yellow-600' :
+                      activity.status === 'info' ? 'bg-blue-100 text-blue-600' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>
                       {getStatusIcon(activity.status)}
                     </div>
-                    <div className="activity-content">
-                      <p className="activity-text">{activity.message}</p>
-                      <p className="activity-time">{activity.time}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">{activity.message}</p>
+                      <p className="text-xs text-gray-500">{activity.time}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="content-card">
-              <div className="card-header">
-                <h3 className="heading-3">Quick Actions</h3>
-              </div>
-              <div className="quick-actions">
-                <Link to="/admin/create-hospital" className="action-btn">
+          </div>
+
+          {/* Quick Actions Section */}
+          <div className="bg-white rounded-lg p-6 shadow-md">
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">Quick Actions</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link to="/admin/create-hospital" className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center group-hover:bg-blue-200">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M3 21h18V9l-9-7-9 7v12z" stroke="currentColor" strokeWidth="2"/>
                     <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="2"/>
                   </svg>
-                  Create Hospital
-                </Link>
-                <Link to="/admin/create-org" className="action-btn">
+                </div>
+                <span className="font-medium text-gray-700 group-hover:text-blue-700">Create Hospital</span>
+              </Link>
+              <Link to="/admin/create-org" className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 group">
+                <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center group-hover:bg-green-200">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
                     <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
                   </svg>
-                  Create Organization
-                </Link>
-                <Link to="/admin/reset-password" className="action-btn">
+                </div>
+                <span className="font-medium text-gray-700 group-hover:text-green-700">Create Organization</span>
+              </Link>
+              <Link to="/admin/reset-password" className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 group">
+                <div className="w-10 h-10 rounded-lg bg-yellow-100 text-yellow-600 flex items-center justify-center group-hover:bg-yellow-200">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
                     <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2"/>
                     <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2"/>
                     <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2"/>
                   </svg>
-                  Reset Password
-                </Link>
-                <Link to="/admin/statistics" className="action-btn">
+                </div>
+                <span className="font-medium text-gray-700 group-hover:text-yellow-700">Reset Password</span>
+              </Link>
+              <Link to="/admin/statistics" className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 group">
+                <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center group-hover:bg-purple-200">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" strokeWidth="2"/>
                     <line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" strokeWidth="2"/>
                     <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" strokeWidth="2"/>
                   </svg>
-                  View Statistics
-                </Link>
-              </div>
+                </div>
+                <span className="font-medium text-gray-700 group-hover:text-purple-700">View Statistics</span>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .dashboard {
-          min-height: calc(100vh - 200px);
-        }
-
-        .dashboard-header {
-          background: var(--gradient-primary);
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-2xl);
-          margin-bottom: var(--spacing-2xl);
-          color: var(--white);
-        }
-
-        .header-content {
-          display: grid;
-          grid-template-columns: 1fr auto;
-          gap: var(--spacing-2xl);
-          align-items: center;
-        }
-
-        .header-image {
-          width: 200px;
-          height: 120px;
-          border-radius: var(--radius-lg);
-          overflow: hidden;
-        }
-
-        .dashboard-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--spacing-xl);
-          margin-bottom: var(--spacing-2xl);
-        }
-
-        .stat-card {
-          background-color: var(--white);
-          border-radius: var(--radius-lg);
-          padding: var(--spacing-xl);
-          box-shadow: var(--shadow-md);
-          transition: transform var(--transition-normal);
-        }
-
-        .stat-card:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-lg);
-        }
-
-        .stat-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-lg);
-        }
-
-        .stat-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: var(--radius-md);
-          background: rgba(44, 90, 160, 0.1);
-          color: var(--primary-blue);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .stat-change {
-          font-size: 0.875rem;
-          font-weight: 600;
-          padding: 0.25rem 0.5rem;
-          border-radius: var(--radius-sm);
-        }
-
-        .stat-change.increase {
-          background-color: rgba(39, 174, 96, 0.1);
-          color: var(--accent-green);
-        }
-
-        .stat-value {
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--gray-900);
-          margin-bottom: var(--spacing-xs);
-        }
-
-        .stat-title {
-          color: var(--gray-600);
-          font-weight: 500;
-          margin: 0;
-        }
-
-        .content-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: var(--spacing-xl);
-        }
-
-        .content-card {
-          background-color: var(--white);
-          border-radius: var(--radius-lg);
-          padding: var(--spacing-xl);
-          box-shadow: var(--shadow-md);
-        }
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-lg);
-          padding-bottom: var(--spacing-md);
-          border-bottom: 1px solid var(--gray-200);
-        }
-
-        .view-all-btn {
-          background: none;
-          border: none;
-          color: var(--primary-blue);
-          font-weight: 500;
-          cursor: pointer;
-          padding: var(--spacing-xs) var(--spacing-sm);
-          border-radius: var(--radius-md);
-          transition: background-color var(--transition-normal);
-        }
-
-        .view-all-btn:hover {
-          background-color: rgba(44, 90, 160, 0.1);
-        }
-
-        .system-status-list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-md);
-        }
-
-        .status-item {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-md);
-          padding: var(--spacing-md);
-          border-radius: var(--radius-md);
-          background-color: var(--gray-50);
-        }
-
-        .status-indicator {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-        }
-
-        .status-indicator.healthy {
-          background-color: var(--accent-green);
-        }
-
-        .status-label {
-          flex: 1;
-          font-weight: 500;
-          color: var(--gray-700);
-        }
-
-        .status-value {
-          font-weight: 600;
-          color: var(--accent-green);
-        }
-
-        .activities-list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-md);
-        }
-
-        .activity-item {
-          display: flex;
-          gap: var(--spacing-md);
-          padding: var(--spacing-md);
-          border-radius: var(--radius-md);
-          transition: background-color var(--transition-normal);
-        }
-
-        .activity-item:hover {
-          background-color: var(--gray-50);
-        }
-
-        .activity-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--white);
-        }
-
-        .activity-icon.success {
-          background-color: var(--accent-green);
-        }
-
-        .activity-icon.info {
-          background-color: var(--secondary-teal);
-        }
-
-        .activity-icon.pending {
-          background-color: var(--warning-orange);
-        }
-
-        .activity-content {
-          flex: 1;
-        }
-
-        .activity-text {
-          font-weight: 500;
-          color: var(--gray-700);
-          margin: 0 0 var(--spacing-xs) 0;
-        }
-
-        .activity-time {
-          color: var(--gray-500);
-          font-size: 0.875rem;
-          margin: 0;
-        }
-
-        .quick-actions {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-          gap: var(--spacing-md);
-        }
-
-        .action-btn {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: var(--spacing-sm);
-          padding: var(--spacing-lg);
-          border: 2px solid var(--gray-200);
-          border-radius: var(--radius-md);
-          background-color: var(--white);
-          color: var(--gray-700);
-          font-weight: 500;
-          cursor: pointer;
-          transition: all var(--transition-normal);
-          text-decoration: none;
-        }
-
-        .action-btn:hover {
-          border-color: var(--primary-blue);
-          color: var(--primary-blue);
-          transform: translateY(-1px);
-          text-decoration: none;
-        }
-
-        @media (max-width: 768px) {
-          .header-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-          }
-          
-          .header-image {
-            justify-self: center;
-          }
-          
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .content-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </AdminLayout>
   );
 };

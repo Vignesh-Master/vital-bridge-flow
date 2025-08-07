@@ -127,6 +127,8 @@ const OrganizationManagement = () => {
         {type}
       </span>
     );
+  };
+
   return (
     <>
       <AdminLayout>
@@ -313,6 +315,6 @@ const OrganizationManagement = () => {
       </AdminLayout>
     </>
   );
-}
+};
 
 export default OrganizationManagement;

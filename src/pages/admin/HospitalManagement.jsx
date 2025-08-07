@@ -20,8 +20,27 @@ const HospitalManagement = () => {
       state: 'TN',
       city: 'Chennai',
       contactPersonName: 'Dr. Raj Kumar',
-    setFormLoading(false);
-  };
+      email: 'raj.kumar@apollohospitals.com',
+      phone: '+91-44-2829-3333',
+      location: 'Chennai, Tamil Nadu',
+      status: 'Active',
+      createdAt: '2024-01-15'
+    },
+    {
+      id: 2,
+      name: 'Fortis Hospital Bangalore',
+      code: 'BG-002',
+      country: 'IN',
+      state: 'KA',
+      city: 'Bangalore',
+      contactPersonName: 'Dr. Priya Sharma',
+      email: 'priya.sharma@fortishealthcare.com',
+      phone: '+91-80-6621-4444',
+      location: 'Bangalore, Karnataka',
+      status: 'Active',
+      createdAt: '2024-01-20'
+    }
+  ]);
 
   const filteredHospitals = hospitals.filter(hospital => {
     const matchesSearch =
@@ -69,6 +88,8 @@ const HospitalManagement = () => {
 
   return (
     <AdminLayout>
+      <div className="hospital-management-page">
+        <div className="container">
           <div className="search-card card">
             <div className="card-header">
               <h3 className="heading-3">Search, Filter & Export</h3>
@@ -129,9 +150,6 @@ const HospitalManagement = () => {
               </div>
             </div>
           )}
-        </div>
-      </div>
-          </div>
 
           {/* Hospitals Table */}
           <div className="table-card card">
@@ -183,12 +201,6 @@ const HospitalManagement = () => {
               </table>
             </div>
           </div>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
 
           {/* Summary Cards */}
           <div className="summary-grid">
@@ -216,220 +228,6 @@ const HospitalManagement = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .hospital-management-page {
-          min-height: calc(100vh - 200px);
-          padding: var(--spacing-xl) 0;
-        }
-
-        .page-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: var(--spacing-2xl);
-        }
-
-        .header-content {
-          flex: 1;
-        }
-
-        .search-card {
-          margin-bottom: var(--spacing-xl);
-        }
-
-        .search-content {
-          display: flex;
-          gap: var(--spacing-md);
-          align-items: center;
-        }
-
-        .search-input-container {
-          position: relative;
-          flex: 1;
-        }
-
-        .search-icon {
-          position: absolute;
-          left: var(--spacing-md);
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--gray-500);
-        }
-
-        .search-input {
-          padding-left: 3rem !important;
-        }
-
-        .table-card {
-          margin-bottom: var(--spacing-xl);
-        }
-
-        .table-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-
-        .table-container {
-          overflow-x: auto;
-        }
-
-        .hospital-details {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-xs);
-        }
-
-        .hospital-name {
-          font-weight: 600;
-          color: var(--gray-900);
-        }
-
-        .hospital-email,
-        .hospital-phone {
-          font-size: 0.875rem;
-          color: var(--gray-600);
-        }
-
-        .code-badge {
-          display: inline-block;
-          padding: var(--spacing-xs) var(--spacing-sm);
-          background-color: rgba(44, 90, 160, 0.1);
-          color: var(--primary-blue);
-          border-radius: var(--radius-sm);
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-
-        .created-date {
-          color: var(--gray-600);
-        }
-
-        .actions-dropdown {
-          position: relative;
-          display: inline-block;
-        }
-
-        .action-btn {
-          background: none;
-          border: none;
-          color: var(--gray-500);
-          cursor: pointer;
-          padding: var(--spacing-sm);
-          border-radius: var(--radius-md);
-          transition: all var(--transition-normal);
-        }
-
-        .action-btn:hover {
-          background-color: var(--gray-50);
-          color: var(--gray-700);
-        }
-
-        .dropdown-menu {
-          position: absolute;
-          right: 0;
-          top: 100%;
-          background-color: var(--white);
-          border: 1px solid var(--gray-200);
-          border-radius: var(--radius-md);
-          box-shadow: var(--shadow-lg);
-          min-width: 180px;
-          z-index: 50;
-          opacity: 0;
-          visibility: hidden;
-          transform: translateY(-10px);
-          transition: all var(--transition-normal);
-        }
-
-        .actions-dropdown:hover .dropdown-menu {
-          opacity: 1;
-          visibility: visible;
-          transform: translateY(0);
-        }
-
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-sm);
-          width: 100%;
-          padding: var(--spacing-md);
-          background: none;
-          border: none;
-          text-align: left;
-          color: var(--gray-700);
-          font-size: 0.875rem;
-          cursor: pointer;
-          transition: background-color var(--transition-normal);
-        }
-
-        .dropdown-item:hover {
-          background-color: var(--gray-50);
-        }
-
-        .dropdown-item.danger {
-          color: var(--accent-red);
-        }
-
-        .dropdown-item.danger:hover {
-          background-color: rgba(231, 76, 60, 0.1);
-        }
-
-        .summary-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--spacing-lg);
-        }
-
-        .summary-card {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: var(--spacing-lg);
-        }
-
-        .summary-content {
-          flex: 1;
-        }
-
-        .summary-label {
-          color: var(--gray-600);
-          font-size: 0.875rem;
-          margin: 0 0 var(--spacing-xs) 0;
-        }
-
-        .summary-value {
-          font-family: var(--font-heading);
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--gray-900);
-          margin: 0;
-        }
-
-        .summary-icon {
-          font-size: 2.5rem;
-          opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-          .page-header {
-            flex-direction: column;
-            gap: var(--spacing-lg);
-          }
-
-          .search-content {
-            flex-direction: column;
-          }
-
-          .table-container {
-            font-size: 0.875rem;
-          }
-
-          .summary-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </AdminLayout>
   );
 };
